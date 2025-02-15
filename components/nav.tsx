@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { auth, signIn, signOut } from "@/auth";
+import Image from "next/image";
 
 export default async function Nav() {
   const session = await auth();
@@ -9,8 +10,15 @@ export default async function Nav() {
   return (
     <nav className="bg-secondary p-4">
       <div className="container mx-auto flex justify-between items-center">
-        <Link href="/" className="text-xl font-bold">
-          Finance Tracker
+        <Link href="/" className="text-xl font-bold flex items-center gap-3">
+          <Image
+            src="/logo.webp"
+            alt="MoneyForge Logo"
+            className="rounded-xl"
+            width={40}
+            height={40}
+          />
+          MoneyForge
         </Link>
         <div className="space-x-4 flex">
           {userId && (

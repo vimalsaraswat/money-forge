@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   BarChart,
   Bar,
@@ -16,10 +16,10 @@ import {
   PieChart,
   Pie,
   Cell,
-} from "recharts"
-import TransactionList from "@/components/transaction-list"
-import AddTransactionForm from "@/components/add-transaction-form"
-import BudgetOverview from "@/components/budget-overview"
+} from "recharts";
+import TransactionList from "@/components/transaction-list";
+import AddTransactionForm from "@/components/add-transaction-form";
+import BudgetOverview from "@/components/budget-overview";
 
 const data = [
   { name: "Jan", income: 4000, expenses: 2400 },
@@ -28,23 +28,23 @@ const data = [
   { name: "Apr", income: 2780, expenses: 3908 },
   { name: "May", income: 1890, expenses: 4800 },
   { name: "Jun", income: 2390, expenses: 3800 },
-]
+];
 
 const pieData = [
   { name: "Groceries", value: 400 },
   { name: "Rent", value: 1000 },
   { name: "Entertainment", value: 300 },
   { name: "Utilities", value: 200 },
-]
+];
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"]
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 export default function Dashboard() {
-  const [showAddTransaction, setShowAddTransaction] = useState(false)
+  const [showAddTransaction, setShowAddTransaction] = useState(false);
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Financial Dashboard</h1>
+      <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <Card>
           <CardHeader>
@@ -115,7 +115,10 @@ export default function Dashboard() {
                       dataKey="value"
                     >
                       {pieData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index % COLORS.length]}
+                        />
                       ))}
                     </Pie>
                     <Tooltip />
@@ -132,10 +135,17 @@ export default function Dashboard() {
               <CardTitle>Recent Transactions</CardTitle>
             </CardHeader>
             <CardContent>
-              <Button onClick={() => setShowAddTransaction(!showAddTransaction)} className="mb-4">
+              <Button
+                onClick={() => setShowAddTransaction(!showAddTransaction)}
+                className="mb-4"
+              >
                 {showAddTransaction ? "Cancel" : "Add Transaction"}
               </Button>
-              {showAddTransaction && <AddTransactionForm onSubmit={() => setShowAddTransaction(false)} />}
+              {showAddTransaction && (
+                <AddTransactionForm
+                  onSubmit={() => setShowAddTransaction(false)}
+                />
+              )}
               <TransactionList />
             </CardContent>
           </Card>
@@ -152,6 +162,5 @@ export default function Dashboard() {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }
-

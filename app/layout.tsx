@@ -8,8 +8,8 @@ import type React from "react"; // Added import for React
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Personal Finance Tracker",
-  description: "Track your income, expenses, and budget with ease",
+  title: "MoneyForge",
+  description: "Forging a solid financial future, one decision at a time.",
 };
 
 export default function RootLayout({
