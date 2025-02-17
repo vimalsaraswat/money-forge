@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={`${inter.className} min-h-dvh flex flex-col`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -27,7 +27,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Nav />
-          {children}
+          <main className="flex-1 grid p-4">{children}</main>
         </ThemeProvider>
       </body>
     </html>
