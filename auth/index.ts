@@ -5,13 +5,16 @@ import NextAuth from "next-auth";
 import { authConfig } from "./config";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  ...authConfig,
   adapter: DrizzleAdapter(db, {
     usersTable: users,
     accountsTable: accounts,
     sessionsTable: sessions,
     verificationTokensTable: verificationTokens,
   }),
-  ...authConfig,
+  session: {
+    strategy: "database",
+  },
   callbacks: {
     authorized: async ({ auth }) => {
       return !!auth;

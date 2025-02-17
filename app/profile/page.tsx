@@ -1,25 +1,32 @@
-"use client"
+// import { useState } from "react"
+// import { Button } from "@/components/ui/button"
+// import { Input } from "@/components/ui/input"
+// import { Label } from "@/components/ui/label"
+// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { SignOut } from "@/components/auth";
 
 export default function Profile() {
-  const [name, setName] = useState("John Doe")
-  const [email, setEmail] = useState("john@example.com")
+  // const [name, setName] = useState("John Doe")
+  // const [email, setEmail] = useState("john@example.com")
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Here you would typically update the user's profile
-    console.log("Profile updated", { name, email })
-  }
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault()
+  //   // Here you would typically update the user's profile
+  //   console.log("Profile updated", { name, email })
+  // }
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">User Profile</h1>
-      <Card>
+    <div className="container h-full mx-auto p-4 flex flex-col">
+      <div className="flex justify-between">
+        <h1 className="text-3xl font-bold mb-6">User Profile</h1>
+        <SignOut variant="destructive" />
+      </div>
+
+      <div className="text-center flex-1 grid place-items-center">
+        <p className="text-lg text-gray-500 animate-pulse">Coming Soon...</p>
+      </div>
+      {/* <Card>
         <CardHeader>
           <CardTitle>Edit Profile</CardTitle>
         </CardHeader>
@@ -36,8 +43,7 @@ export default function Profile() {
             <Button type="submit">Update Profile</Button>
           </form>
         </CardContent>
-      </Card>
+      </Card> */}
     </div>
-  )
+  );
 }
-
