@@ -15,7 +15,7 @@ export default async function LandingPage() {
           Welcome to Personal
           <br /> Finance Tracker
         </h1>
-        <p className="text-xl mb-8">
+        <p className="text-xl mb-2 md:mb-8">
           Take control of your finances with ease and clarity.
         </p>
         <div className="flex items-center gap-4">

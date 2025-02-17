@@ -14,11 +14,11 @@ export default async function DashboardPage() {
   }
 
   const transactions = await DB.getTransactions(session?.user?.id);
-  console.log("transactions", transactions);
+  // console.log("transactions", transactions);
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
+    <div className="container mx-auto">
+      <h1 className="text-2xl font-bold mb-2 md:mb-6">Dashboard</h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <StatCard title="Total Income" amount={5000} />
         <StatCard title="Total Expenses" amount={3500} />

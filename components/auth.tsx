@@ -23,7 +23,7 @@ export function SignIn({ ...props }: ButtonProps) {
               width={24}
               height={24}
             />
-            Sign Up
+            <span className="sr-only md:not-sr-only">Sign Up</span>
           </>
         )}
       </Button>
