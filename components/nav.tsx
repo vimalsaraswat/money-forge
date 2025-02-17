@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { auth, signIn, signOut } from "@/auth";
+import { auth } from "@/auth";
 import Image from "next/image";
+import { SignIn } from "./auth";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 export default async function Nav() {
   const session = await auth();
-  const userId = session?.user?.id;
+  const user = session?.user;
 
   return (
     <nav className="bg-secondary p-4">
@@ -21,44 +23,27 @@ export default async function Nav() {
           MoneyForge
         </Link>
         <div className="space-x-4 flex">
-          {userId && (
+          {user ? (
             <>
               <Button asChild variant="ghost">
                 <Link href="/dashboard">Dashboard</Link>
               </Button>
-              <Button asChild variant="ghost">
-                <Link href={`/profile/${userId}`}>Profile</Link>
+              <Button asChild variant="ghost" className="pl-0">
+                <Link href="/profile">
+                  <Avatar className="border-accent border-1">
+                    <AvatarImage src={user.image!} alt="@shadcn" />
+                    <AvatarFallback>
+                      {user?.name?.split(" ")?.map((_) => _.charAt(0))}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="sr-only md:not-sr-only">
+                    {user?.name?.split(" ")[0]}
+                  </span>
+                </Link>
               </Button>
             </>
-          )}
-          {userId ? (
-            <form
-              className="p-0 w-fit"
-              action={async () => {
-                "use server";
-                await signOut({
-                  redirectTo: "/",
-                });
-              }}
-            >
-              <Button type="submit" variant="ghost">
-                Logout
-              </Button>
-            </form>
           ) : (
-            <form
-              className="p-0 w-fit"
-              action={async () => {
-                "use server";
-                await signIn("google", {
-                  redirectTo: "/dashboard",
-                });
-              }}
-            >
-              <Button type="submit" variant="outline">
-                Sign in with Google
-              </Button>
-            </form>
+            <SignIn />
           )}
         </div>
       </div>
