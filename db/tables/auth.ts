@@ -1,7 +1,6 @@
 import {
   boolean,
   integer,
-  pgTable,
   primaryKey,
   text,
   timestamp,
@@ -53,7 +52,7 @@ export const sessions = createTable("session", {
   expires: timestamp("expires", { mode: "date" }).notNull(),
 });
 
-export const verificationTokens = pgTable(
+export const verificationTokens = createTable(
   "verificationToken",
   {
     identifier: text("identifier").notNull(),
