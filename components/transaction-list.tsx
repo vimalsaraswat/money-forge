@@ -1,12 +1,20 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { transactions as transactionsType } from "@/db/schema";
+import { cn } from "@/lib/utils";
+import { TransactionEnum } from "@/types";
 
-const transactions = [
-  { id: 1, type: "Income", amount: 1000, category: "Salary", date: "2023-03-01" },
-  { id: 2, type: "Expense", amount: 50, category: "Groceries", date: "2023-03-02" },
-  { id: 3, type: "Expense", amount: 30, category: "Entertainment", date: "2023-03-03" },
-]
-
-export default function TransactionList() {
+export default function TransactionList({
+  transactions,
+}: {
+  transactions: (typeof transactionsType.$inferSelect)[];
+}) {
   return (
     <Table>
       <TableHeader>
@@ -18,16 +26,24 @@ export default function TransactionList() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {transactions.map((transaction) => (
+        {transactions?.map((transaction) => (
           <TableRow key={transaction.id}>
-            <TableCell>{transaction.type}</TableCell>
+            <TableCell
+              className={cn(
+                "capitalize",
+                transaction?.type === TransactionEnum.INCOME
+                  ? "text-green-500"
+                  : "text-red-500",
+              )}
+            >
+              {transaction.type}
+            </TableCell>
             <TableCell>${transaction.amount}</TableCell>
             <TableCell>{transaction.category}</TableCell>
-            <TableCell>{transaction.date}</TableCell>
+            <TableCell>{new Date(transaction.date).toLocaleString()}</TableCell>
           </TableRow>
         ))}
       </TableBody>
     </Table>
-  )
+  );
 }
-
