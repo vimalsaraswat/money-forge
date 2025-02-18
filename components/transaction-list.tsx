@@ -26,23 +26,33 @@ export default function TransactionList({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {transactions?.map((transaction) => (
-          <TableRow key={transaction.id}>
-            <TableCell
-              className={cn(
-                "capitalize",
-                transaction?.type === TransactionEnum.INCOME
-                  ? "text-green-500"
-                  : "text-red-500",
-              )}
-            >
-              {transaction.type}
-            </TableCell>
-            <TableCell>${transaction.amount}</TableCell>
-            <TableCell>{transaction.category}</TableCell>
-            <TableCell>{new Date(transaction.date).toLocaleString()}</TableCell>
+        {transactions?.length > 0 ? (
+          transactions?.map((transaction) => (
+            <TableRow key={transaction.id}>
+              <TableCell
+                className={cn(
+                  "capitalize",
+                  transaction?.type === TransactionEnum.INCOME
+                    ? "text-green-500"
+                    : "text-red-500",
+                )}
+              >
+                {transaction.type}
+              </TableCell>
+              <TableCell>${transaction.amount}</TableCell>
+              <TableCell>{transaction.category}</TableCell>
+              <TableCell>
+                {new Date(transaction.date).toLocaleString()}
+              </TableCell>
+            </TableRow>
+          ))
+        ) : (
+          <TableRow>
+            <td colSpan={4} className="text-center text-muted-foreground py-20">
+              No transactions found
+            </td>
           </TableRow>
-        ))}
+        )}
       </TableBody>
     </Table>
   );

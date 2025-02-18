@@ -12,7 +12,7 @@ export default function BudgetOverview() {
       <div className="absolute w-full h-full z-20 top-0 left-0 backdrop-blur-[2px] text-center flex-1 grid place-items-center">
         <p className="text-lg text-gray-500 font-bold">Coming Soon...</p>
       </div>
-      <div className="animate-pulse">
+      <div className="animate-pulse p-2">
         {budgets.map((item) => (
           <div key={item.category}>
             <div className="flex justify-between mb-1">

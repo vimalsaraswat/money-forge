@@ -46,7 +46,7 @@ export default function AddTransactionForm() {
       <DialogTrigger asChild>
         <Button variant="outline">Add Transaction</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] overflow-y-auto max-h-[80vh]">
         <DialogHeader>
           <DialogTitle>Add Transaction</DialogTitle>
           <DialogDescription>
@@ -59,14 +59,15 @@ export default function AddTransactionForm() {
               <Label>Transaction Type</Label>
               <RadioGroup
                 defaultValue={values?.type}
+                required
                 name="type"
                 className="flex gap-3"
               >
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center gap-2">
                   <RadioGroupItem value="expense" id="expense" />
                   <Label htmlFor="expense">Expense</Label>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center gap-2">
                   <RadioGroupItem value="income" id="income" />
                   <Label htmlFor="income">Income</Label>
                 </div>
@@ -85,6 +86,7 @@ export default function AddTransactionForm() {
               type="number"
               name="amount"
               placeholder="$200"
+              min={1}
               defaultValue={values?.amount}
               required
             />
@@ -96,7 +98,7 @@ export default function AddTransactionForm() {
           </div>
           <div>
             <Label htmlFor="category">Category</Label>
-            <Select name="category" defaultValue={values?.category}>
+            <Select name="category" defaultValue={values?.category} required>
               <SelectTrigger>
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
