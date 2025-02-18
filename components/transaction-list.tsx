@@ -6,14 +6,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { transactions as transactionsType } from "@/db/schema";
+import { type transactions as TransactionsType } from "@/db/tables/finance";
 import { cn } from "@/lib/utils";
 import { TransactionEnum } from "@/types";
 
 export default function TransactionList({
   transactions,
 }: {
-  transactions: (typeof transactionsType.$inferSelect)[];
+  transactions: (typeof TransactionsType.$inferSelect)[];
 }) {
   return (
     <Table>

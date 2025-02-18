@@ -11,3 +11,9 @@ export enum CategoryEnum {
   SALARY = "salary",
   OTHER = "other",
 }
+
+export type MonthlyChartDataType = {
+  name: string;
+  income: number;
+  expenses: number;
+};
