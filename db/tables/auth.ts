@@ -16,6 +16,7 @@ export const users = createTable("user", {
   email: text("email").unique(),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
+  createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
 });
 
 export const accounts = createTable(
@@ -34,6 +35,7 @@ export const accounts = createTable(
     scope: text("scope"),
     id_token: text("id_token"),
     session_state: text("session_state"),
+    createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
   },
   (account) => [
     {
@@ -50,6 +52,7 @@ export const sessions = createTable("session", {
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   expires: timestamp("expires", { mode: "date" }).notNull(),
+  createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
 });
 
 export const verificationTokens = createTable(
@@ -58,6 +61,7 @@ export const verificationTokens = createTable(
     identifier: text("identifier").notNull(),
     token: text("token").notNull(),
     expires: timestamp("expires", { mode: "date" }).notNull(),
+    createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
   },
   (verificationToken) => [
     {
@@ -81,6 +85,7 @@ export const authenticators = createTable(
     credentialDeviceType: text("credentialDeviceType").notNull(),
     credentialBackedUp: boolean("credentialBackedUp").notNull(),
     transports: text("transports"),
+    createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
   },
   (authenticator) => [
     {

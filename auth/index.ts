@@ -14,6 +14,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   }),
   session: {
     strategy: "database",
+    maxAge: 2 * 60,
   },
   callbacks: {
     authorized: async ({ auth }) => {
