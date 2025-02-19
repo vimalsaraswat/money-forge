@@ -8,7 +8,14 @@ export const DB = {
   },
   getTransactions: async (userId: string) => {
     return await db
-      .select()
+      .select({
+        id: transactions.id,
+        amount: transactions.amount,
+        category: transactions.category,
+        date: transactions.date,
+        description: transactions.description,
+        type: transactions.type,
+      })
       .from(transactions)
       .where(eq(transactions.userId, userId));
   },

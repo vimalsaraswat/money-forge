@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import Image from "next/image";
 import { SignIn } from "./auth";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { HomeIcon } from "lucide-react";
 
 export default async function Nav() {
   const session = await auth();
@@ -26,7 +27,9 @@ export default async function Nav() {
           {user ? (
             <>
               <Button asChild variant="ghost">
-                <Link href="/dashboard">Dashboard</Link>
+                <Link href="/dashboard">
+                  <HomeIcon /> Dashboard
+                </Link>
               </Button>
               <Button asChild variant="ghost" className="pl-0">
                 <Link href="/profile">

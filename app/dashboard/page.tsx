@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import AddTransactionForm from "@/components/add-transaction-form";
+import TransactionForm from "@/components/transaction-form";
 import BudgetOverview from "@/components/budget-overview";
 import { ExpenseBreakdown, IncomeExpenseGraph } from "@/components/chart";
 import TransactionList from "@/components/transaction-list";
@@ -7,7 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DB } from "@/db/queries";
 import { getExpenseChartData, getTransactionChartData } from "@/lib/helpers";
+import { TransactionType } from "@/types";
 import { notFound } from "next/navigation";
+import { cn, formatCurrency } from "@/lib/utils";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -15,7 +17,9 @@ export default async function DashboardPage() {
     notFound();
   }
 
-  const transactions = await DB.getTransactions(session?.user?.id);
+  const transactions = (await DB.getTransactions(
+    session?.user?.id,
+  )) as TransactionType[];
 
   const transactionChartData = getTransactionChartData(transactions);
   const expenseChartData = getExpenseChartData(transactions);
@@ -49,7 +53,7 @@ export default async function DashboardPage() {
           <TabsTrigger value="transactions">Transactions</TabsTrigger>
           <TabsTrigger value="budget">Budget</TabsTrigger>
         </TabsList>
-        <AddTransactionForm />
+        <TransactionForm />
         <TabsContent value="overview">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Card>
@@ -117,8 +121,14 @@ const StatCard = ({ title, amount }: { title: string; amount: number }) => (
       <CardTitle>{title}</CardTitle>
     </CardHeader>
     <CardContent>
-      <p className="text-2xl font-semibold">
-        {amount < 0 ? "-" : ""}${Math.abs(amount)}
+      <p
+        className={cn(
+          "text-2xl font-semibold",
+          amount < 0 && "text-destructive",
+        )}
+      >
+        {amount < 0 && "-"}
+        {formatCurrency(Math.abs(amount))}
       </p>
     </CardContent>
   </Card>

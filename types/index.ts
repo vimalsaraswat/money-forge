@@ -17,3 +17,12 @@ export type MonthlyChartDataType = {
   income: number;
   expenses: number;
 };
+
+export type TransactionType = {
+  id: string;
+  amount: number;
+  category: CategoryEnum;
+  date: Date;
+  description: string;
+  type: TransactionEnum;
+};

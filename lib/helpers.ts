@@ -1,9 +1,6 @@
-import { type transactions as TransactionsType } from "@/db/tables/finance";
-import { MonthlyChartDataType } from "@/types";
+import { MonthlyChartDataType, TransactionType } from "@/types";
 
-export const getTransactionChartData = (
-  transactions: (typeof TransactionsType.$inferSelect)[],
-) => {
+export const getTransactionChartData = (transactions: TransactionType[]) => {
   if (!transactions) return [];
 
   const monthlyData = transactions.reduce(
@@ -38,9 +35,7 @@ export const getTransactionChartData = (
   return monthlyDataArray;
 };
 
-export const getExpenseChartData = (
-  transactions: (typeof TransactionsType.$inferSelect)[],
-) => {
+export const getExpenseChartData = (transactions: TransactionType[]) => {
   if (!transactions) return [];
 
   const expenseBreakdownData = transactions?.reduce(
