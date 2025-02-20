@@ -12,8 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createTransaction } from "@/actions";
-import { CategoryEnum } from "@/types";
+import { handleTransaction } from "@/actions";
+import { CategoryEnum, TransactionType } from "@/types";
 import {
   Dialog,
   DialogContent,
@@ -23,15 +23,37 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
+import { Pencil } from "lucide-react";
 
-export default function AddTransactionForm() {
+export default function TransactionForm({
+  transaction,
+  editMode,
+}: {
+  transaction?: TransactionType;
+  editMode?: boolean;
+}) {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [state, action, isPending] = useActionState(createTransaction, null);
+  const initialState = {
+    success: false,
+    errors: {},
+    message: "",
+    initialValues: {
+      id: transaction?.id ?? "",
+      type: transaction?.type ?? "",
+      amount: String(transaction?.amount ?? 0),
+      category: transaction?.category ?? "",
+      date:
+        transaction?.date?.toISOString()?.split("T")[0] ??
+        new Date()?.toISOString()?.split("T")[0],
+      description: transaction?.description ?? "",
+    },
+  };
+  const [state, action, isPending] = useActionState(
+    handleTransaction,
+    initialState,
+  );
   const errors = state?.errors;
   const values = state?.initialValues;
-  console.log({
-    state,
-  });
 
   const categories = Object.values(CategoryEnum);
 
@@ -44,13 +66,21 @@ export default function AddTransactionForm() {
   return (
     <Dialog open={dialogOpen} onOpenChange={(open) => setDialogOpen(open)}>
       <DialogTrigger asChild>
-        <Button variant="outline">Add Transaction</Button>
+        {editMode ? (
+          <Button variant="outline" size="icon">
+            <Pencil />
+          </Button>
+        ) : (
+          <Button variant="outline">Add Transaction</Button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] overflow-y-auto max-h-[80vh]">
         <DialogHeader>
-          <DialogTitle>Add Transaction</DialogTitle>
+          <DialogTitle>{editMode ? "Edit" : "Add"} Transaction</DialogTitle>
           <DialogDescription>
-            Add a new transaction to track your expenses and income.
+            {editMode
+              ? "Update this transaction's details."
+              : "Add a new transaction to track your expenses and income."}
           </DialogDescription>
         </DialogHeader>
         <form action={action} className="space-y-4">
@@ -100,7 +130,10 @@ export default function AddTransactionForm() {
             <Label htmlFor="category">Category</Label>
             <Select name="category" defaultValue={values?.category} required>
               <SelectTrigger>
-                <SelectValue placeholder="Select category" />
+                <SelectValue
+                  placeholder="Select category"
+                  className="capitalize"
+                />
               </SelectTrigger>
               <SelectContent>
                 {categories?.map((category, index) => (
@@ -123,6 +156,7 @@ export default function AddTransactionForm() {
           <div>
             <Label htmlFor="date">Date</Label>
             <Input
+              onChange={(e) => console.log(e.target.value)}
               id="date"
               type="date"
               name="date"

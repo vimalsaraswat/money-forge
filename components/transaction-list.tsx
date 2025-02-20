@@ -6,14 +6,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { type transactions as TransactionsType } from "@/db/tables/finance";
-import { cn } from "@/lib/utils";
-import { TransactionEnum } from "@/types";
+import { cn, formatCurrency } from "@/lib/utils";
+import { TransactionType, TransactionEnum } from "@/types";
+import TransactionForm from "./transaction-form";
 
 export default function TransactionList({
   transactions,
 }: {
-  transactions: (typeof TransactionsType.$inferSelect)[];
+  transactions: TransactionType[];
 }) {
   return (
     <Table>
@@ -34,15 +34,20 @@ export default function TransactionList({
                   "capitalize",
                   transaction?.type === TransactionEnum.INCOME
                     ? "text-green-500"
-                    : "text-red-500",
+                    : "text-destructive",
                 )}
               >
                 {transaction.type}
               </TableCell>
-              <TableCell>${transaction.amount}</TableCell>
-              <TableCell>{transaction.category}</TableCell>
+              <TableCell>{formatCurrency(transaction?.amount)}</TableCell>
+              <TableCell className="capitalize">
+                {transaction.category}
+              </TableCell>
               <TableCell>
-                {new Date(transaction.date).toLocaleString()}
+                {new Date(transaction.date).toLocaleDateString()}
+              </TableCell>
+              <TableCell>
+                <TransactionForm transaction={transaction} editMode={true} />
               </TableCell>
             </TableRow>
           ))

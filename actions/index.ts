@@ -14,7 +14,7 @@ const TransactionSchema = z.object({
     },
     {
       message: "Amount must be a valid number greater than zero.",
-    },
+    }
   ),
   type: z.nativeEnum(TransactionEnum, {
     errorMap: () => ({ message: "Please select a transaction type." }),
@@ -35,7 +35,7 @@ const TransactionSchema = z.object({
 
 type PrevState =
   | {
-      success: boolean;
+      success?: boolean;
       errors?: {
         amount?: string[];
         type?: string[];
@@ -44,6 +44,7 @@ type PrevState =
         description?: string[];
       };
       initialValues?: {
+        id?: string;
         amount: string;
         type: string;
         category: string;
@@ -55,13 +56,13 @@ type PrevState =
   | undefined
   | null;
 
-export async function createTransaction(
+export async function handleTransaction(
   prevState: PrevState,
-  formData: FormData,
+  formData: FormData
 ) {
   try {
     const { type, amount, category, date, description } = Object.fromEntries(
-      formData,
+      formData
     ) as Record<string, string>;
 
     const initialValues = { type, amount, category, date, description };
@@ -87,11 +88,48 @@ export async function createTransaction(
 
     const transactionData = {
       ...validatedFields.data,
+      description: validatedFields.data?.description ?? "",
       amount: parseFloat(validatedFields.data.amount),
       date: new Date(validatedFields.data.date),
+    };
+
+    if (prevState?.initialValues?.id) {
+      const transactionId = prevState.initialValues.id;
+      const oldTransaction = await DB.getTransactionById(transactionId);
+
+      if (oldTransaction.length !== 1) {
+        return {
+          success: false,
+          message: "Transaction does not exist",
+          initialValues: prevState.initialValues,
+        };
+      }
+      if (oldTransaction[0].userId !== session.user.id) {
+        return {
+          success: false,
+          message: "Unauthorised",
+          initialValues: prevState.initialValues,
+        };
+      }
+
+      const updateData = {
+        ...oldTransaction[0],
+        ...transactionData,
+      };
+      await DB.updateTransaction(transactionId, updateData);
+
+      revalidatePath("/dashboard");
+      return {
+        success: true,
+        message: "Transaction updated successfully!",
+      };
+    }
+
+    const createTransactionData = {
+      ...transactionData,
       userId: session.user.id,
     };
-    await DB.createTransaction(transactionData);
+    await DB.createTransaction(createTransactionData);
 
     revalidatePath("/dashboard");
     return {

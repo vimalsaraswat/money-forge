@@ -1,10 +1,25 @@
-import { eq } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import { db } from "../drizzle";
 import { transactions } from "../tables/finance";
+import { TransactionType } from "@/types";
 
 export const DB = {
   createTransaction: async (transaction: typeof transactions.$inferInsert) => {
     return await db.insert(transactions).values(transaction);
+  },
+  updateTransaction: async (
+    transactionId: string,
+    transaction: TransactionType,
+  ) => {
+    return await db
+      .update(transactions)
+      .set({ ...transaction, updatedAt: sql`NOW()` })
+      .where(eq(transactions.id, transactionId));
+  },
+  deleteTransaction: async (transactionId: string) => {
+    return await db
+      .delete(transactions)
+      .where(eq(transactions.id, transactionId));
   },
   getTransactions: async (userId: string) => {
     return await db
@@ -17,6 +32,13 @@ export const DB = {
         type: transactions.type,
       })
       .from(transactions)
-      .where(eq(transactions.userId, userId));
+      .where(eq(transactions.userId, userId))
+      .orderBy(desc(transactions.updatedAt));
+  },
+  getTransactionById: async (transactionId: string) => {
+    return await db
+      .select()
+      .from(transactions)
+      .where(eq(transactions.id, transactionId));
   },
 };

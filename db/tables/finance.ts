@@ -25,4 +25,5 @@ export const transactions = createTable("transaction", {
   date: timestamp("date", { mode: "date" }).notNull(),
   description: text("description"),
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
+  updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow(),
 });
