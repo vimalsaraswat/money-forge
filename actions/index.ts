@@ -122,7 +122,10 @@ export async function handleTransaction(
       return {
         success: true,
         message: "Transaction updated successfully!",
-        initialValues,
+        initialValues: {
+          ...initialValues,
+          id: transactionId,
+        },
       };
     }
 
