@@ -28,10 +28,15 @@ export default async function Nav() {
             <>
               <Button asChild variant="ghost">
                 <Link href="/dashboard">
-                  <HomeIcon /> Dashboard
+                  <HomeIcon />
+                  <span className="sr-only sm:not-sr-only">Dashboard</span>
                 </Link>
               </Button>
-              <Button asChild variant="ghost" className="pl-0">
+              <Button
+                asChild
+                variant="ghost"
+                className="p-0 sm:px-4 sm:py-2 sm:pl-0"
+              >
                 <Link href="/profile">
                   <Avatar className="border-accent border-1">
                     <AvatarImage src={user.image!} alt="@shadcn" />

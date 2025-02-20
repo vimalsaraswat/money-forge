@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/table";
 import { cn, formatCurrency } from "@/lib/utils";
 import { TransactionType, TransactionEnum } from "@/types";
-import TransactionForm from "./transaction-form";
+import TransactionForm, { DeleteTransaction } from "./transaction-form";
 
 export default function TransactionList({
   transactions,
@@ -46,8 +46,9 @@ export default function TransactionList({
               <TableCell>
                 {new Date(transaction.date).toLocaleDateString()}
               </TableCell>
-              <TableCell>
+              <TableCell className="space-x-2">
                 <TransactionForm transaction={transaction} editMode={true} />
+                <DeleteTransaction transactionId={transaction?.id} />
               </TableCell>
             </TableRow>
           ))

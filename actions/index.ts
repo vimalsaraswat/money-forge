@@ -14,7 +14,7 @@ const TransactionSchema = z.object({
     },
     {
       message: "Amount must be a valid number greater than zero.",
-    }
+    },
   ),
   type: z.nativeEnum(TransactionEnum, {
     errorMap: () => ({ message: "Please select a transaction type." }),
@@ -45,11 +45,11 @@ type PrevState =
       };
       initialValues?: {
         id?: string;
-        amount: string;
-        type: string;
-        category: string;
-        date: string;
-        description: string;
+        amount?: string;
+        type?: string;
+        category?: string;
+        date?: string;
+        description?: string;
       };
       message?: string;
     }
@@ -58,11 +58,11 @@ type PrevState =
 
 export async function handleTransaction(
   prevState: PrevState,
-  formData: FormData
+  formData: FormData,
 ) {
   try {
     const { type, amount, category, date, description } = Object.fromEntries(
-      formData
+      formData,
     ) as Record<string, string>;
 
     const initialValues = { type, amount, category, date, description };
@@ -101,14 +101,14 @@ export async function handleTransaction(
         return {
           success: false,
           message: "Transaction does not exist",
-          initialValues: prevState.initialValues,
+          initialValues,
         };
       }
       if (oldTransaction[0].userId !== session.user.id) {
         return {
           success: false,
           message: "Unauthorised",
-          initialValues: prevState.initialValues,
+          initialValues,
         };
       }
 
@@ -122,6 +122,7 @@ export async function handleTransaction(
       return {
         success: true,
         message: "Transaction updated successfully!",
+        initialValues,
       };
     }
 
@@ -139,5 +140,70 @@ export async function handleTransaction(
   } catch (err) {
     const error = err as Error;
     console.error(error?.message);
+  }
+}
+
+export async function deleteTransaction(prevState: PrevState) {
+  try {
+    const transactionId = prevState?.initialValues?.id;
+
+    if (!transactionId) {
+      return {
+        success: false,
+        message: "Transaction ID is missing",
+        initialValues: {
+          id: transactionId,
+        },
+      };
+    }
+
+    const session = await auth();
+    if (!session?.user?.id) {
+      return {
+        success: false,
+        message: "Unauthorised",
+        initialValues: {
+          id: transactionId,
+        },
+      };
+    }
+
+    const oldTransaction = await DB.getTransactionById(transactionId);
+
+    if (oldTransaction.length !== 1) {
+      return {
+        success: false,
+        message: "Transaction does not exist",
+        initialValues: {
+          id: transactionId,
+        },
+      };
+    }
+    if (oldTransaction[0].userId !== session.user.id) {
+      return {
+        success: false,
+        message: "Unauthorised",
+        initialValues: {
+          id: transactionId,
+        },
+      };
+    }
+
+    await DB.deleteTransaction(transactionId);
+
+    revalidatePath("/dashboard");
+    return {
+      success: true,
+      message: "Transaction deleted successfully!",
+      initialValues: {
+        id: transactionId,
+      },
+    };
+  } catch (error) {
+    console.error("Failed to delete transaction:", error);
+    return {
+      success: false,
+      message: "Failed to delete transaction",
+    };
   }
 }

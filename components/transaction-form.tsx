@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { handleTransaction } from "@/actions";
+import { deleteTransaction, handleTransaction } from "@/actions";
 import { CategoryEnum, TransactionType } from "@/types";
 import {
   Dialog,
@@ -23,7 +23,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
-import { Pencil } from "lucide-react";
+import { IndianRupee, Pencil, Trash } from "lucide-react";
 
 export default function TransactionForm({
   transaction,
@@ -40,7 +40,7 @@ export default function TransactionForm({
     initialValues: {
       id: transaction?.id ?? "",
       type: transaction?.type ?? "",
-      amount: String(transaction?.amount ?? 0),
+      amount: String(transaction?.amount ?? ""),
       category: transaction?.category ?? "",
       date:
         transaction?.date?.toISOString()?.split("T")[0] ??
@@ -111,15 +111,19 @@ export default function TransactionForm({
           </div>
           <div>
             <Label htmlFor="amount">Amount</Label>
-            <Input
-              id="amount"
-              type="number"
-              name="amount"
-              placeholder="$200"
-              min={1}
-              defaultValue={values?.amount}
-              required
-            />
+            <div className="relative">
+              <IndianRupee className="absolute top-2 left-3" size={20} />
+              <Input
+                id="amount"
+                type="number"
+                name="amount"
+                placeholder="$200"
+                className="pl-7"
+                min={1}
+                defaultValue={values?.amount}
+                required
+              />
+            </div>
             {errors?.amount && (
               <p className="text-destructive text-xs text-end">
                 {errors?.amount}
@@ -171,7 +175,61 @@ export default function TransactionForm({
           </div>
           <DialogFooter>
             <Button type="submit" disabled={isPending}>
-              {isPending ? "Adding..." : "Add Transaction"}
+              {isPending
+                ? editMode
+                  ? "Updating..."
+                  : "Adding..."
+                : editMode
+                  ? "Update Transaction"
+                  : "Add Transaction"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+export function DeleteTransaction({
+  transactionId,
+}: {
+  transactionId: string;
+}) {
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const [state, action, isPending] = useActionState(deleteTransaction, {
+    success: false,
+    message: "",
+    initialValues: {
+      id: transactionId,
+    },
+  });
+
+  useEffect(() => {
+    if (state?.success) {
+      setDialogOpen(false);
+    }
+  }, [state?.success, setDialogOpen]);
+
+  return (
+    <Dialog open={dialogOpen} onOpenChange={(open) => setDialogOpen(open)}>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="icon">
+          <Trash />
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px] overflow-y-auto max-h-[80vh]">
+        <DialogHeader>
+          <DialogTitle>Delete Transaction</DialogTitle>
+          <DialogDescription>
+            Are you sure you want to delete this transaction? This action cannot
+            be undone.
+          </DialogDescription>
+        </DialogHeader>
+        <form action={action} className="space-y-4">
+          <DialogFooter>
+            <Button type="submit" disabled={isPending} variant="destructive">
+              {isPending ? "Deleting..." : "Delete Transaction"}
             </Button>
           </DialogFooter>
         </form>
