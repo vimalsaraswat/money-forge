@@ -47,13 +47,15 @@ export default async function DashboardPage() {
         <StatCard title="Remaining Balance" amount={remainingBalance} />
       </div>
 
-      <Tabs defaultValue="overview" className="mb-6 space-y-3 md:space-x-3">
-        <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="transactions">Transactions</TabsTrigger>
-          <TabsTrigger value="budget">Budget</TabsTrigger>
-        </TabsList>
-        <TransactionForm />
+      <Tabs defaultValue="overview" className="mb-6 space-y-3">
+        <div className="flex flex-col md:flex-row gap-2">
+          <TabsList>
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="transactions">Transactions</TabsTrigger>
+            <TabsTrigger value="budget">Budget</TabsTrigger>
+          </TabsList>
+          <TransactionForm />
+        </div>
         <TabsContent value="overview">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Card>

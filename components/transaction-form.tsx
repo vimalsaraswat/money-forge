@@ -23,7 +23,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
-import { IndianRupee, Pencil, Trash } from "lucide-react";
+import { IndianRupee, Pencil, Plus, Trash } from "lucide-react";
 
 export default function TransactionForm({
   transaction,
@@ -71,7 +71,9 @@ export default function TransactionForm({
             <Pencil />
           </Button>
         ) : (
-          <Button variant="outline">Add Transaction</Button>
+          <Button variant="outline">
+            <Plus /> Add Transaction
+          </Button>
         )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] overflow-y-auto max-h-[80vh]">
