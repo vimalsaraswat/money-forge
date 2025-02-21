@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import Nav from "@/components/nav";
 import type React from "react"; // Added import for React
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,6 +29,7 @@ export default function RootLayout({
         >
           <Nav />
           <main className="flex-1 grid p-4">{children}</main>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
