@@ -24,6 +24,7 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import { IndianRupee, Pencil, Plus, Trash } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function TransactionForm({
   transaction,
@@ -32,6 +33,7 @@ export default function TransactionForm({
   transaction?: TransactionType;
   editMode?: boolean;
 }) {
+  const { toast } = useToast();
   const [dialogOpen, setDialogOpen] = useState(false);
   const initialState = {
     success: false,
@@ -42,9 +44,7 @@ export default function TransactionForm({
       type: transaction?.type ?? "",
       amount: String(transaction?.amount ?? ""),
       category: transaction?.category ?? "",
-      date:
-        transaction?.date?.toISOString()?.split("T")[0] ??
-        new Date()?.toISOString()?.split("T")[0],
+      date: transaction?.date?.toISOString()?.split("T")[0] ?? "",
       description: transaction?.description ?? "",
     },
   };
@@ -58,11 +58,15 @@ export default function TransactionForm({
   const categories = Object.values(CategoryEnum);
 
   useEffect(() => {
+    if (state?.message?.length ?? -1 > 0) {
+      toast({
+        description: state?.message,
+      });
+    }
     if (state?.success) {
       setDialogOpen(false);
     }
-  }, [state?.success, setDialogOpen]);
-
+  }, [state]);
   return (
     <Dialog open={dialogOpen} onOpenChange={(open) => setDialogOpen(open)}>
       <DialogTrigger asChild>
@@ -119,7 +123,7 @@ export default function TransactionForm({
                 id="amount"
                 type="number"
                 name="amount"
-                placeholder="$200"
+                placeholder="200"
                 className="pl-7"
                 min={1}
                 defaultValue={values?.amount}
@@ -162,11 +166,12 @@ export default function TransactionForm({
           <div>
             <Label htmlFor="date">Date</Label>
             <Input
-              onChange={(e) => console.log(e.target.value)}
               id="date"
               type="date"
               name="date"
-              defaultValue={values?.date}
+              defaultValue={
+                values?.date || new Date()?.toISOString()?.split("T")[0]
+              }
               required
             />
             {errors?.date && (
@@ -198,20 +203,23 @@ export function DeleteTransaction({
   transactionId: string;
 }) {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const { toast } = useToast();
 
-  const [state, action, isPending] = useActionState(deleteTransaction, {
-    success: false,
-    message: "",
-    initialValues: {
-      id: transactionId,
-    },
-  });
+  const [state, action, isPending] = useActionState(
+    deleteTransaction.bind(null, transactionId),
+    null,
+  );
 
   useEffect(() => {
+    if (state?.message?.length ?? -1 > 0) {
+      toast({
+        description: state?.message,
+      });
+    }
     if (state?.success) {
       setDialogOpen(false);
     }
-  }, [state?.success, setDialogOpen]);
+  }, [state]);
 
   return (
     <Dialog open={dialogOpen} onOpenChange={(open) => setDialogOpen(open)}>

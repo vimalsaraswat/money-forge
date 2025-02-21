@@ -146,28 +146,13 @@ export async function handleTransaction(
   }
 }
 
-export async function deleteTransaction(prevState: PrevState) {
+export async function deleteTransaction(transactionId: string) {
   try {
-    const transactionId = prevState?.initialValues?.id;
-
-    if (!transactionId) {
-      return {
-        success: false,
-        message: "Transaction ID is missing",
-        initialValues: {
-          id: transactionId,
-        },
-      };
-    }
-
     const session = await auth();
     if (!session?.user?.id) {
       return {
         success: false,
         message: "Unauthorised",
-        initialValues: {
-          id: transactionId,
-        },
       };
     }
 
@@ -177,9 +162,6 @@ export async function deleteTransaction(prevState: PrevState) {
       return {
         success: false,
         message: "Transaction does not exist",
-        initialValues: {
-          id: transactionId,
-        },
       };
     }
     if (oldTransaction[0].userId !== session.user.id) {
@@ -198,9 +180,6 @@ export async function deleteTransaction(prevState: PrevState) {
     return {
       success: true,
       message: "Transaction deleted successfully!",
-      initialValues: {
-        id: transactionId,
-      },
     };
   } catch (error) {
     console.error("Failed to delete transaction:", error);
