@@ -24,7 +24,8 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import { IndianRupee, Pencil, Plus, Trash } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { Textarea } from "./ui/textarea";
+import { toast } from "sonner";
 
 export default function TransactionForm({
   transaction,
@@ -33,7 +34,6 @@ export default function TransactionForm({
   transaction?: TransactionType;
   editMode?: boolean;
 }) {
-  const { toast } = useToast();
   const [dialogOpen, setDialogOpen] = useState(false);
   const initialState = {
     success: false,
@@ -59,9 +59,7 @@ export default function TransactionForm({
 
   useEffect(() => {
     if (state?.message?.length ?? -1 > 0) {
-      toast({
-        description: state?.message,
-      });
+      toast(state?.message);
     }
     if (state?.success) {
       setDialogOpen(false);
@@ -164,6 +162,20 @@ export default function TransactionForm({
             )}
           </div>
           <div>
+            <Label htmlFor="description">Description</Label>
+            <Textarea
+              id="description"
+              name="description"
+              placeholder="Transaction description..."
+              defaultValue={values?.description}
+            />
+            {errors?.description && (
+              <p className="text-destructive text-xs text-end">
+                {errors?.description}
+              </p>
+            )}
+          </div>
+          <div>
             <Label htmlFor="date">Date</Label>
             <Input
               id="date"
@@ -203,7 +215,6 @@ export function DeleteTransaction({
   transactionId: string;
 }) {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const { toast } = useToast();
 
   const [state, action, isPending] = useActionState(
     deleteTransaction.bind(null, transactionId),
@@ -212,9 +223,7 @@ export function DeleteTransaction({
 
   useEffect(() => {
     if (state?.message?.length ?? -1 > 0) {
-      toast({
-        description: state?.message,
-      });
+      toast(state?.message);
     }
     if (state?.success) {
       setDialogOpen(false);

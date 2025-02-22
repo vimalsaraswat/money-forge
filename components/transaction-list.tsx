@@ -22,29 +22,38 @@ export default function TransactionList({
           transactions?.map((transaction) => (
             <div
               key={transaction.id}
-              className="border rounded-md p-4 mb-4 shadow-sm"
+              className="border rounded-md p-4 mb-4 shadow-sm flex flex-col gap-2"
             >
               <div className="flex justify-between">
-                <div className="capitalize text-sm text-muted-foreground">
-                  {transaction.category}
+                <div>
+                  <div className="capitalize text-md font-semibold">
+                    {transaction?.category}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {new Date(transaction.date).toLocaleDateString()}
+                  </div>
                 </div>
-                <div>{formatCurrency(transaction?.amount)}</div>
-              </div>
-              <div className="text-sm text-muted-foreground">
-                {new Date(transaction.date).toLocaleDateString()}
-              </div>
-              <div className="flex items-center justify-between">
-                <div
-                  className={cn(
-                    "capitalize font-semibold",
-                    transaction?.type === TransactionEnum.INCOME
-                      ? "text-green-500"
-                      : "text-destructive",
-                  )}
-                >
-                  {transaction.type}
+                <div className="text-lg font-bold">
+                  {formatCurrency(transaction?.amount)}
                 </div>
-                <div className="mt-2 flex items-center justify-end space-x-2">
+              </div>
+              <div className="flex justify-between">
+                <div>
+                  <div
+                    className={cn(
+                      "capitalize font-semibold text-lg",
+                      transaction?.type === TransactionEnum.INCOME
+                        ? "text-green-500"
+                        : "text-destructive"
+                    )}
+                  >
+                    {transaction?.type}
+                  </div>
+                  <div className="text-xs text-muted-foreground line-clamp-2">
+                    {transaction?.description}
+                  </div>
+                </div>
+                <div className="flex gap-2">
                   <TransactionForm transaction={transaction} editMode={true} />
                   <DeleteTransaction transactionId={transaction?.id} />
                 </div>
@@ -76,7 +85,7 @@ export default function TransactionList({
                       "capitalize",
                       transaction?.type === TransactionEnum.INCOME
                         ? "text-green-500"
-                        : "text-destructive",
+                        : "text-destructive"
                     )}
                   >
                     {transaction.type}
