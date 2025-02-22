@@ -6,12 +6,12 @@ import { SignIn } from "./auth";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { HomeIcon } from "lucide-react";
 
-export default async function Nav() {
+export default async function Header() {
   const session = await auth();
   const user = session?.user;
 
   return (
-    <nav className="bg-secondary p-4">
+    <header className="bg-secondary/60 backdrop-blur-sm p-4">
       <div className="container mx-auto flex justify-between items-center">
         <Link href="/" className="text-xl font-bold flex items-center gap-3">
           <Image
@@ -23,7 +23,7 @@ export default async function Nav() {
           />
           MoneyForge
         </Link>
-        <div className="space-x-4 flex">
+        <nav className="space-x-4 flex">
           {user ? (
             <>
               <Button asChild variant="ghost">
@@ -53,8 +53,8 @@ export default async function Nav() {
           ) : (
             <SignIn />
           )}
-        </div>
+        </nav>
       </div>
-    </nav>
+    </header>
   );
 }
