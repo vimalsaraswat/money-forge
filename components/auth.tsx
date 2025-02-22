@@ -1,8 +1,8 @@
 import { signIn, signOut } from "@/auth";
-import { Button, ButtonProps } from "./ui/button";
+import { Button } from "./ui/button";
 import Image from "next/image";
 
-export function SignIn({ ...props }: ButtonProps) {
+export function SignIn({ ...props }: React.ComponentProps<typeof Button>) {
   return (
     <form
       className="p-0 w-fit"
@@ -31,7 +31,7 @@ export function SignIn({ ...props }: ButtonProps) {
   );
 }
 
-export function SignOut({ ...props }: ButtonProps) {
+export function SignOut({ ...props }: React.ComponentProps<typeof Button>) {
   return (
     <form
       className="p-0 w-fit"
