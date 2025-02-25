@@ -7,7 +7,7 @@ export default defineConfig({
   schema: "./db/schema.ts",
   out: "./migrations",
   dialect: "postgresql",
-  tablesFilter: ["fin-track*"],
+  tablesFilter: [`${process.env.TABLE_PREFIX}*`],
   dbCredentials: {
     url: process.env.DATABASE_URL!,
   },
