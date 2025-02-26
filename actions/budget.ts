@@ -4,6 +4,7 @@ import { DB } from "@/db/queries";
 import { z } from "zod";
 import { PeriodEnum } from "@/types";
 import { auth } from "@/auth";
+import { revalidatePath } from "next/cache";
 
 const BudgetSchema = z.object({
   amount: z.coerce
@@ -36,7 +37,7 @@ type PrevState =
 export async function handleBudget(prevState: PrevState, formData: FormData) {
   try {
     const { categoryId, startDate, period, amount } = Object.fromEntries(
-      formData
+      formData,
     ) as Record<string, string>;
 
     const initialValues = {
@@ -51,7 +52,7 @@ export async function handleBudget(prevState: PrevState, formData: FormData) {
       return {
         success: false,
         errors: validatedFields.error.flatten().fieldErrors,
-        message: "Missing Fields. Failed to Create Budget.",
+        message: "Missing or invalid fields. Failed to Create Budget.",
       };
     }
 
@@ -69,9 +70,11 @@ export async function handleBudget(prevState: PrevState, formData: FormData) {
       userId: session.user.id,
     });
 
+    revalidatePath("/dashboard/budgets");
+
     return {
       success: true,
-      message: "Budget Created",
+      message: "Budget created successfully!",
     };
   } catch (err) {
     const error = err as Error;
