@@ -8,7 +8,10 @@ import {
 } from "@/components/ui/table";
 import { cn, formatCurrency } from "@/lib/utils";
 import { TransactionType, TransactionEnum } from "@/types";
-import TransactionForm, { DeleteTransaction } from "./transaction-form";
+import { DeleteTransaction } from "./transaction-form";
+import Link from "next/link";
+import { Button } from "../ui/button";
+import { Pencil } from "lucide-react";
 
 export default function TransactionList({
   transactions,
@@ -44,7 +47,7 @@ export default function TransactionList({
                       "capitalize font-semibold text-lg",
                       transaction?.type === TransactionEnum.INCOME
                         ? "text-green-500"
-                        : "text-destructive"
+                        : "text-destructive",
                     )}
                   >
                     {transaction?.type}
@@ -54,7 +57,13 @@ export default function TransactionList({
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <TransactionForm transaction={transaction} editMode={true} />
+                  <Button variant="outline" size="icon" asChild>
+                    <Link
+                      href={`/dashboard/transactions/${transaction?.id}/edit`}
+                    >
+                      <Pencil />
+                    </Link>
+                  </Button>
                   <DeleteTransaction transactionId={transaction?.id} />
                 </div>
               </div>
@@ -85,7 +94,7 @@ export default function TransactionList({
                       "capitalize",
                       transaction?.type === TransactionEnum.INCOME
                         ? "text-green-500"
-                        : "text-destructive"
+                        : "text-destructive",
                     )}
                   >
                     {transaction.type}
@@ -98,10 +107,13 @@ export default function TransactionList({
                     {new Date(transaction.date).toLocaleDateString()}
                   </TableCell>
                   <TableCell className="space-x-2">
-                    <TransactionForm
-                      transaction={transaction}
-                      editMode={true}
-                    />
+                    <Button variant="outline" size="icon" asChild>
+                      <Link
+                        href={`/dashboard/transactions/${transaction?.id}/edit`}
+                      >
+                        <Pencil />
+                      </Link>
+                    </Button>
                     <DeleteTransaction transactionId={transaction?.id} />
                   </TableCell>
                 </TableRow>
