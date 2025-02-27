@@ -5,6 +5,9 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import Header from "@/components/header";
 import { Toaster } from "@/components/ui/sonner";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,18 +23,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} h-dvh flex flex-col`}>
+      <body className={`${inter.className} antialiased h-dvh`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <Header />
-          <main className="flex-1 grid p-4 overflow-auto backdrop-saturate-50 backdrop-blur-sm">
-            {children}
-          </main>
-          <Toaster />
+          <SidebarProvider className="flex flex-col [--header-height:calc(--spacing(14))]">
+            <Header />
+            <div className="flex flex-1 items-stretch">
+              <AppSidebar />
+              <SidebarInset className="self-stretch flex-1 grid p-2 md:p-4">
+                {children}
+              </SidebarInset>
+            </div>
+            <Toaster />
+          </SidebarProvider>
         </ThemeProvider>
       </body>
     </html>
