@@ -3,6 +3,11 @@ export enum TransactionEnum {
   EXPENSE = "expense",
 }
 
+export enum PeriodEnum {
+  MONTHLY = "monthly",
+  YEARLY = "yearly",
+}
+
 export enum CategoryEnum {
   FOOD = "food",
   TRANSPORTATION = "transportation",
@@ -21,8 +26,19 @@ export type MonthlyChartDataType = {
 export type TransactionType = {
   id: string;
   amount: number;
-  category: CategoryEnum;
+  category: string;
+  categoryId: string;
+  type: TransactionEnum;
   date: Date;
   description: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type CategoryType = {
+  id: string;
+  name: string;
+  description: string | null;
   type: TransactionEnum;
+  isPublic: boolean;
 };

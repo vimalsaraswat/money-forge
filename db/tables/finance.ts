@@ -6,11 +6,16 @@ import {
   boolean,
 } from "drizzle-orm/pg-core";
 import { users } from "./auth";
-import { TransactionEnum } from "@/types";
+import { PeriodEnum, TransactionEnum } from "@/types";
 import { createTable } from "../table-creator";
 
+export const budgetPeriodEnum = pgEnum(
+  "period",
+  Object.values(PeriodEnum) as [string, ...string[]],
+);
+
 export const transactionTypeEnum = pgEnum(
-  "transactionType",
+  "fin-local_transactionType",
   Object.values(TransactionEnum) as [string, ...string[]],
 );
 
@@ -64,9 +69,9 @@ export const budgets = createTable("budgets", {
       onDelete: "cascade",
       onUpdate: "cascade",
     }),
+  period: budgetPeriodEnum("period").notNull(),
   amount: doublePrecision("amount").notNull(),
   startDate: timestamp("startDate", { mode: "date" }).notNull(),
-  endDate: timestamp("endDate", { mode: "date" }).notNull(),
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
   updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow(),
   deletedAt: timestamp("deletedAt", { mode: "date" }),

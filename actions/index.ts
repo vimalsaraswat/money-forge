@@ -2,7 +2,7 @@
 
 import { auth } from "@/auth";
 import { DB } from "@/db/queries";
-import { CategoryEnum, TransactionEnum } from "@/types";
+import { TransactionEnum } from "@/types";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
@@ -19,7 +19,7 @@ const TransactionSchema = z.object({
   type: z.nativeEnum(TransactionEnum, {
     errorMap: () => ({ message: "Please select a transaction type." }),
   }),
-  category: z.nativeEnum(CategoryEnum, {
+  categoryId: z.string({
     errorMap: () => ({ message: "Please select a category." }),
   }),
   date: z.string().refine((val) => !isNaN(new Date(val).getTime()), {
@@ -27,7 +27,7 @@ const TransactionSchema = z.object({
   }),
   description: z
     .string()
-    .max(200, {
+    .max(255, {
       message: "Description must be less than 200 characters.",
     })
     .optional(),
@@ -39,7 +39,7 @@ type PrevState =
       errors?: {
         amount?: string[];
         type?: string[];
-        category?: string[];
+        categoryId?: string[];
         date?: string[];
         description?: string[];
       };
@@ -47,7 +47,7 @@ type PrevState =
         id?: string;
         amount?: string;
         type?: string;
-        category?: string;
+        categoryId?: string;
         date?: string;
         description?: string;
       };
@@ -61,11 +61,17 @@ export async function handleTransaction(
   formData: FormData,
 ) {
   try {
-    const { type, amount, category, date, description } = Object.fromEntries(
+    const { type, amount, categoryId, date, description } = Object.fromEntries(
       formData,
     ) as Record<string, string>;
 
-    const initialValues = { type, amount, category, date, description };
+    const initialValues = {
+      type,
+      amount,
+      categoryId,
+      date,
+      description,
+    };
     const validatedFields = TransactionSchema.safeParse(initialValues);
 
     if (!validatedFields.success) {
@@ -86,8 +92,18 @@ export async function handleTransaction(
       };
     }
 
+    const category = await DB.getCategoryById(categoryId);
+
+    if (category?.length !== 1) {
+      return {
+        success: false,
+        meassage: "Category does not exist",
+        initialValues,
+      };
+    }
     const transactionData = {
       ...validatedFields.data,
+      categoryId: validatedFields?.data?.categoryId,
       description: validatedFields.data?.description ?? "",
       amount: parseFloat(validatedFields.data.amount),
       date: new Date(validatedFields.data.date),
@@ -113,12 +129,17 @@ export async function handleTransaction(
       }
 
       const updateData = {
-        ...oldTransaction[0],
-        ...transactionData,
+        categoryId:
+          (transactionData.categoryId || oldTransaction[0].categoryId) ?? "",
+        description:
+          (transactionData.description || oldTransaction[0].description) ?? "",
+        amount: transactionData.amount || oldTransaction[0].amount,
+        date: transactionData.date || oldTransaction[0].date,
+        type: transactionData.type || oldTransaction[0].type,
       };
       await DB.updateTransaction(transactionId, updateData);
 
-      revalidatePath("/dashboard");
+      revalidatePath("/dashboard/transactions");
       return {
         success: true,
         message: "Transaction updated successfully!",
@@ -135,7 +156,7 @@ export async function handleTransaction(
     };
     await DB.createTransaction(createTransactionData);
 
-    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/transactions");
     return {
       success: true,
       message: "Transaction added successfully!",

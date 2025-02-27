@@ -99,12 +99,7 @@ export default function InputWithLabel({
       )}
 
       {error && (
-        <p
-          className={cn(
-            "text-[0.8rem] font-medium text-destructive",
-            errorClassName,
-          )}
-        >
+        <p className={cn("text-xs text-destructive text-end", errorClassName)}>
           {error}
         </p>
       )}

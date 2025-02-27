@@ -34,9 +34,7 @@ export default function CategorySelect({
   const [open, setOpen] = useState(false);
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
-  const [category, setCategory] = useState(
-    categories?.find((c) => c?.name === selectedCategory)?.id ?? "",
-  );
+  const [category, setCategory] = useState("");
 
   const categoriesToShow = useMemo(() => {
     return categories?.filter((category) => category.type === type);
@@ -46,6 +44,9 @@ export default function CategorySelect({
     (async () => {
       const userCategories = await getUserCategories();
       setCategories(userCategories as CategoryType[]);
+      setCategory(
+        userCategories?.find((c) => c?.id === selectedCategory)?.id ?? "",
+      );
       setCategoriesLoading(false);
     })();
   }, []);
@@ -67,13 +68,13 @@ export default function CategorySelect({
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-[400px] p-0 max-w-[80vw] max-h-[40vh]"
+          className="w-[400px] p-0 max-w-[80vw] z-50"
           side="bottom"
           align="center"
         >
           <Command>
             <CommandInput placeholder={`Search ${type} categories...`} />
-            <CommandList>
+            <CommandList className="max-h-[40vh] overflow-auto">
               <CommandEmpty>
                 {!type
                   ? "Select a transaction type first."
