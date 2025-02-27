@@ -1,7 +1,6 @@
 import { auth } from "@/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { HomeIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -16,7 +15,7 @@ export default async function Header() {
     <header className="bg-background/60 backdrop-blur-sm sticky top-0 z-50 flex w-full items-center border-b">
       <div className="flex h-(--header-height) w-full items-center gap-2 px-4">
         <SidebarTrigger />
-        <Separator orientation="vertical" className="mr-2 h-4" />
+        {/* <Separator orientation="vertical" className="mr-2 h-4" /> */}
         <Link href="/" className="text-xl font-bold flex items-center gap-3">
           <Image
             src="/logo.webp"

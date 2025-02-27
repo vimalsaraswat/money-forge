@@ -1,3 +1,5 @@
+"use client";
+
 import { BadgeIndianRupee, Calendar, Home, Settings } from "lucide-react";
 
 import {
@@ -15,6 +17,7 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 const items = [
   {
@@ -40,11 +43,12 @@ const items = [
 ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const pathname = usePathname();
+
+  if (pathname === "/") return;
+
   return (
-    <Sidebar
-      className="top-(--header-height) h-[calc(100svh-var(--header-height))]!"
-      {...props}
-    >
+    <Sidebar {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem className="flex gap-2 p-2 md:hidden">
