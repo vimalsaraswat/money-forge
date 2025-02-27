@@ -7,7 +7,6 @@ import Header from "@/components/header";
 import { Toaster } from "@/components/ui/sonner";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -34,8 +33,10 @@ export default function RootLayout({
             <Header />
             <div className="flex flex-1 items-stretch">
               <AppSidebar />
-              <SidebarInset className="self-stretch flex-1 grid p-2 md:p-4">
-                {children}
+              <SidebarInset className="self-stretch flex-1">
+                <div className="h-[calc(100dvh-var(--header-height)-2px)] overflow-auto p-2 md:p-4 grid">
+                  {children}
+                </div>
               </SidebarInset>
             </div>
             <Toaster />
