@@ -21,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" style={{ fontSize: "140%" }} suppressHydrationWarning>
       <body className={`${inter.className} antialiased h-dvh`}>
         <ThemeProvider
           attribute="class"
