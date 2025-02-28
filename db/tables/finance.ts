@@ -15,7 +15,7 @@ export const budgetPeriodEnum = pgEnum(
 );
 
 export const transactionTypeEnum = pgEnum(
-  "fin-local_transactionType",
+  "transactionType",
   Object.values(TransactionEnum) as [string, ...string[]],
 );
 

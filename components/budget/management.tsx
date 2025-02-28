@@ -11,6 +11,7 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { formatCurrency } from "@/lib/utils";
 
 type Budget = {
   id: string;
@@ -20,18 +21,17 @@ type Budget = {
   amount: number;
 };
 
+const calculateProgress = (spent: number, amount: number) => {
+  return (spent / amount) * 100;
+};
+
+const getProgressColor = (progress: number) => {
+  if (progress >= 90) return "bg-destructive";
+  if (progress >= 75) return "bg-warning/80";
+  return "bg-primary";
+};
+
 export default function BudgetManagement({ budgets }: { budgets: Budget[] }) {
-  const calculateProgress = (spent: number, amount: number) => {
-    console.log(spent, amount, (spent / amount) * 100);
-    return (spent / amount) * 100;
-  };
-
-  const getProgressColor = (progress: number) => {
-    if (progress >= 90) return "bg-destructive";
-    if (progress >= 75) return "bg-warning";
-    return "bg-primary";
-  };
-
   return (
     <div className="space-y-6">
       {!(budgets?.length > 0) ? (
@@ -85,21 +85,22 @@ export default function BudgetManagement({ budgets }: { budgets: Budget[] }) {
                     Budget
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-2">
+                <CardContent className="flex flex-col gap-2">
                   <div className="flex justify-between">
                     <span>
-                      ${budget.spent} / ${budget.amount}
+                      {formatCurrency(budget.spent)} /{" "}
+                      {formatCurrency(budget.amount)}
                     </span>
                     <span>{Math.round(progress)}%</span>
                   </div>
                   <Progress
-                    value={progress}
+                    value={Math.round(progress)}
                     progressClassName={progressColor}
                   />
                   {progress >= 90 && (
                     <Alert variant="destructive">
-                      <AlertCircle className="h-4 w-4" />
-                      <AlertTitle>Warning</AlertTitle>
+                      <AlertCircle className="h-4 w-4 stroke-warning" />
+                      <AlertTitle className="text-warning">Warning</AlertTitle>
                       <AlertDescription>
                         {`You've nearly exceeded your budget for ${budget.category}`}
                       </AlertDescription>
@@ -108,7 +109,7 @@ export default function BudgetManagement({ budgets }: { budgets: Budget[] }) {
                 </CardContent>
                 <CardFooter>
                   <p className="text-sm text-muted-foreground">
-                    Remaining: ${budget.amount - budget.spent}
+                    Remaining: {formatCurrency(budget.amount - budget.spent)}
                   </p>
                 </CardFooter>
               </Card>

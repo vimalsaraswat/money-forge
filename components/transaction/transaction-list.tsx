@@ -6,12 +6,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { cn, formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency, formatDate } from "@/lib/utils";
 import { TransactionType, TransactionEnum } from "@/types";
 import { DeleteTransaction } from "./transaction-form";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import { Pencil } from "lucide-react";
+import { ArrowDown, ArrowUp, Pencil } from "lucide-react";
 
 export default function TransactionList({
   transactions,
@@ -27,20 +27,20 @@ export default function TransactionList({
               key={transaction.id}
               className="border rounded-md p-4 mb-4 shadow-sm flex flex-col gap-2"
             >
-              <div className="flex justify-between">
+              <div className="flex justify-between flex-wrap-reverse">
                 <div>
                   <div className="capitalize text-md font-semibold">
                     {transaction?.category}
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    {new Date(transaction.date).toLocaleDateString()}
+                    {formatDate(transaction?.date)}
                   </div>
                 </div>
                 <div className="text-lg font-bold">
                   {formatCurrency(transaction?.amount)}
                 </div>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between flex-wrap">
                 <div>
                   <div
                     className={cn(
@@ -79,10 +79,11 @@ export default function TransactionList({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Type</TableHead>
+              <TableHead className="text-center">Type</TableHead>
               <TableHead>Amount</TableHead>
               <TableHead>Category</TableHead>
               <TableHead>Date</TableHead>
+              <TableHead className="sr-only">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -97,15 +98,20 @@ export default function TransactionList({
                         : "text-destructive",
                     )}
                   >
-                    {transaction.type}
+                    <div className="flex items-center gap-1">
+                      {transaction.type === TransactionEnum.INCOME ? (
+                        <ArrowUp />
+                      ) : (
+                        <ArrowDown />
+                      )}{" "}
+                      {transaction.type}
+                    </div>
                   </TableCell>
                   <TableCell>{formatCurrency(transaction?.amount)}</TableCell>
                   <TableCell className="capitalize">
-                    {transaction.category}
+                    {transaction?.category}
                   </TableCell>
-                  <TableCell>
-                    {new Date(transaction.date).toLocaleDateString()}
-                  </TableCell>
+                  <TableCell>{formatDate(transaction?.date)}</TableCell>
                   <TableCell className="space-x-2">
                     <Button variant="outline" size="icon" asChild>
                       <Link

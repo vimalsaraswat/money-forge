@@ -21,6 +21,7 @@ export default async function EditTransactionForm({
   }
   const transaction = (await DB.getTransactionById(
     transactionId,
+    session.user.id,
   )) as TransactionType[];
 
   if (!transaction?.length) {

@@ -7,7 +7,9 @@ import {
 } from "./tables/auth";
 import {
   transactions,
-  categoryEnum,
+  categories,
+  budgets,
+  budgetPeriodEnum,
   transactionTypeEnum,
 } from "./tables/finance";
 
@@ -18,6 +20,8 @@ export {
   verificationTokens,
   authenticators,
   transactions,
-  categoryEnum,
+  categories,
+  budgets,
+  budgetPeriodEnum,
   transactionTypeEnum,
 };

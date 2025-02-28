@@ -13,11 +13,11 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { HeaderHero } from "./heading-hero";
 
 const items = [
   {
@@ -43,29 +43,17 @@ const items = [
 ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { isMobile, setOpenMobile } = useSidebar();
   const pathname = usePathname();
 
   if (pathname === "/") return;
 
   return (
     <Sidebar {...props}>
-      <SidebarHeader>
+      <SidebarHeader className="p-0 py-2">
         <SidebarMenu>
-          <SidebarMenuItem className="flex gap-2 p-2 md:hidden">
-            <SidebarTrigger />
-            <Link
-              href="/"
-              className="text-xl font-bold flex items-center gap-3"
-            >
-              <Image
-                src="/logo.webp"
-                alt="MoneyForge Logo"
-                className="rounded-xl size-8"
-                width={40}
-                height={40}
-              />
-              MoneyForge
-            </Link>
+          <SidebarMenuItem className="flex gap-2 p-2 mx-0 md:hidden">
+            <HeaderHero />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
@@ -77,7 +65,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <Link href={item.url}>
+                    <Link
+                      href={item.url}
+                      onClick={() => {
+                        if (isMobile) {
+                          setOpenMobile(false);
+                        }
+                      }}
+                    >
                       <item.icon />
                       <span>{item.title}</span>
                     </Link>
