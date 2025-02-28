@@ -41,7 +41,7 @@ export default function BudgetForm() {
       router.replace("/dashboard/budgets");
     }
   }, [state]);
-  console.log(state);
+  // console.log(state);
 
   return (
     <form action={action}>
