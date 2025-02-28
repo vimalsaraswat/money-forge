@@ -32,7 +32,7 @@ export default function RootLayout({
           <SidebarProvider className="flex flex-col [--header-height:calc(--spacing(14))]">
             <Header />
             <div className="flex flex-1 items-stretch">
-              <AppSidebar />
+              <AppSidebar className="pt-[var(--header-height)]" />
               <SidebarInset className="self-stretch flex-1">
                 <div className="h-[calc(100dvh-var(--header-height)-2px)] overflow-auto p-2 md:p-4 grid">
                   {children}
