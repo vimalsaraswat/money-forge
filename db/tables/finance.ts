@@ -1,20 +1,14 @@
-import {
-  text,
-  timestamp,
-  pgEnum,
-  doublePrecision,
-  boolean,
-} from "drizzle-orm/pg-core";
+import { text, timestamp, doublePrecision, boolean } from "drizzle-orm/pg-core";
 import { users } from "./auth";
 import { PeriodEnum, TransactionEnum } from "@/types";
-import { createTable } from "../table-creator";
+import { createEnum, createTable } from "../table-creator";
 
-export const budgetPeriodEnum = pgEnum(
+export const budgetPeriodEnum = createEnum(
   "period",
   Object.values(PeriodEnum) as [string, ...string[]],
 );
 
-export const transactionTypeEnum = pgEnum(
+export const transactionTypeEnum = createEnum(
   "transactionType",
   Object.values(TransactionEnum) as [string, ...string[]],
 );
