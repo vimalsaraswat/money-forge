@@ -111,7 +111,10 @@ export async function handleTransaction(
 
     if (prevState?.initialValues?.id) {
       const transactionId = prevState.initialValues.id;
-      const oldTransaction = await DB.getTransactionById(transactionId);
+      const oldTransaction = await DB.getTransactionById(
+        transactionId,
+        session.user.id,
+      );
 
       if (oldTransaction.length !== 1) {
         return {
@@ -177,7 +180,10 @@ export async function deleteTransaction(transactionId: string) {
       };
     }
 
-    const oldTransaction = await DB.getTransactionById(transactionId);
+    const oldTransaction = await DB.getTransactionById(
+      transactionId,
+      session.user.id,
+    );
 
     if (oldTransaction.length !== 1) {
       return {
