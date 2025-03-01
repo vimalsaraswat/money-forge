@@ -15,7 +15,10 @@ export default async function BudgentsPage() {
   const budgets = await DB.getBudgets(session?.user?.id);
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 relative animate-pulse">
+      <div className="absolute  w-full h-full z-50 top-0 left-0 backdrop-blur-[2px] text-center flex-1 grid place-items-center">
+        <p className="text-5xl text-gray-500 font-bold">Coming Soon...</p>
+      </div>
       <div className="flex items-end justify-between">
         <h2 className="text-2xl font-bold">Budget Overview</h2>
         <Button variant="outline" asChild>
@@ -26,7 +29,7 @@ export default async function BudgentsPage() {
         </Button>
       </div>
 
-      <BudgetManagement budgets={budgets} />
+      {/* <BudgetManagement budgets={budgets} /> */}
     </div>
   );
 }
