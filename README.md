@@ -1,4 +1,3 @@
-
 # Money Forge
 
 Money Forge is a personal finance tracker application that allows users to manage their income and expenses, create budgets, and gain insights into their spending habits.
