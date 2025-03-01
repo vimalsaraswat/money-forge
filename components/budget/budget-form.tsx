@@ -21,7 +21,7 @@ export default function BudgetForm() {
     category: "",
     amount: "",
     categoryId: "",
-    startDate: new Date()?.toISOString()?.split("T")[0],
+    startDate: new Date()?.toDateString(),
     period: "",
     description: "",
   };
@@ -79,9 +79,7 @@ export default function BudgetForm() {
             onSelect={(date) =>
               setFormState({
                 ...formState,
-                startDate: new Date(date || new Date())
-                  ?.toISOString()
-                  ?.split("T")[0],
+                startDate: new Date(date || new Date())?.toDateString(),
               })
             }
             disabled={(date) => date < new Date("1900-01-01")}

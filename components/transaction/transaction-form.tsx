@@ -40,9 +40,7 @@ export default function TransactionForm({
       type: transaction?.type ?? "",
       amount: String(transaction?.amount ?? ""),
       date:
-        (transaction?.date?.toISOString()?.split("T")[0] ||
-          new Date()?.toISOString()?.split("T")[0]) ??
-        "",
+        (transaction?.date?.toDateString() || new Date()?.toDateString()) ?? "",
       categoryId: transaction?.categoryId ?? "",
       description: transaction?.description ?? "",
     },
@@ -124,9 +122,7 @@ export default function TransactionForm({
             mode="single"
             selected={new Date(date)}
             onSelect={(date) =>
-              setDate(
-                new Date(date || new Date())?.toISOString()?.split("T")[0],
-              )
+              setDate(new Date(date || new Date())?.toDateString())
             }
             disabled={(date) =>
               date > new Date() || date < new Date("1900-01-01")
