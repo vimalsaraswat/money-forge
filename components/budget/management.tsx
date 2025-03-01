@@ -33,20 +33,21 @@ const getProgressColor = (progress: number) => {
 
 export default function BudgetManagement({ budgets }: { budgets: Budget[] }) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 flex-1">
       {!(budgets?.length > 0) ? (
-        <div className="grid place-items-center py-20">
-          <Button className="mx-auto" variant="ghost" size="lg" asChild>
+        <div className="text-center flex flex-col gap-2 items-center justify-center h-full py-20 rounded-lg max-w-[80%] mx-auto">
+          <AlertCircle className="h-10 w-10 text-secondary-foreground" />
+          <h3 className="text-lg font-semibold text-foreground">
+            No Budgets Yet
+          </h3>
+          <p className="text-sm text-secondary-foreground">
+            Start tracking your expenses by creating a budget.
+          </p>
+          <Button variant="outline" size="sm" asChild>
             <Link href="/dashboard/budgets/new">
-              <Plus className="mr-2 h-4 w-4" /> Add Budget
+              <Plus className="mr-2 h-4 w-4" /> Create Budget
             </Link>
           </Button>
-
-          <p>
-            No existing budgets found,
-            <br />
-            Create one by clicking below
-          </p>
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
