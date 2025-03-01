@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+# Money Forge
 
-First, run the development server:
+Money Forge is a personal finance tracker application that allows users to manage their income and expenses, create budgets, and gain insights into their spending habits.
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Usage](#usage)
+- [Contributing](#contributing)
+
+## Installation
+
+To install and set up the project, follow these steps:
+
+1. Clone the repository:
+
+```bash
+git clone <repository-url>
+```
+
+2. Navigate to the project directory:
+
+```bash
+cd <project-directory>
+```
+
+3. Install the dependencies using npm or yarn:
+
+```bash
+npm install
+```
+
+4.  Set up your database connection
+5.  Run the database migrations
+```bash
+npx drizzle-kit generate
+npx drizzle-kit push
+```
+
+6. Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Usage
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+After installation, you can access the application in your browser.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Key features include:
 
-## Learn More
+*   **Transaction Tracking:**  Record income and expenses with categories and dates.
+*   **Budgeting:**  Create and manage budgets for different categories.
+*   **Insights:**  Visualize spending patterns and track budget progress.
 
-To learn more about Next.js, take a look at the following resources:
+Refer to in app documentation to understand more about how to use this application.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Contributing
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+We welcome contributions to Money Forge! Please follow these guidelines:
 
-## Deploy on Vercel
+1.  Fork the repository.
+2.  Create a new branch for your feature or bug fix:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+git checkout -b feature/your-feature-name
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3.  Make your changes and commit them with descriptive messages:
+
+```bash
+git commit -m 'Add your feature or fix'
+```
+
+4.  Push your branch to your forked repository:
+
+```bash
+git push origin feature/your-feature-name
+```
+
+5.  Submit a pull request to the main repository.
