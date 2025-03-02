@@ -16,13 +16,13 @@ export default async function EditTransactionForm({
   }
 
   const transactionId = (await params)?.id;
-  if (!transactionId) {
-    notFound();
-  }
-  const transaction = (await DB.getTransactionById(
-    transactionId,
-    session.user.id,
-  )) as TransactionType[];
+
+  const transaction = transactionId
+    ? ((await DB.getTransactionById(
+        transactionId,
+        session.user.id,
+      )) as TransactionType[])
+    : [];
 
   if (!transaction?.length) {
     notFound();
@@ -32,7 +32,7 @@ export default async function EditTransactionForm({
     <Card>
       <CardHeader>
         <CardTitle>
-          <h2 className="text-2xl font-bold"> Add New Transaction</h2>
+          <h2 className="text-2xl font-bold">Edit Transaction</h2>
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-1">

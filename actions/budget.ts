@@ -38,10 +38,8 @@ type PrevState =
 export async function handleBudget(prevState: PrevState, formData: FormData) {
   try {
     const { categoryId, startDate, period, amount } = Object.fromEntries(
-      formData,
+      formData
     ) as Record<string, string>;
-
-    console.log(formData);
 
     const initialValues = {
       amount,

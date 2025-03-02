@@ -73,7 +73,6 @@ export default function BudgetForm({
       router.replace("/dashboard/budgets");
     }
   }, [state]);
-  console.log(state, initialFormState, budget);
 
   return (
     <>
@@ -157,8 +156,8 @@ export default function BudgetForm({
                   ? "Updating..."
                   : "Adding..."
                 : editMode
-                  ? "Update Budget"
-                  : "Add Budget"}
+                ? "Update Budget"
+                : "Add Budget"}
             </Button>
           </div>
         </form>
@@ -172,7 +171,7 @@ export function DeleteBudget({ budgetId }: { budgetId: string }) {
 
   const [state, action, isPending] = useActionState(
     deleteBudget.bind(null, budgetId),
-    null,
+    null
   );
 
   useEffect(() => {

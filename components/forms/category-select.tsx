@@ -34,7 +34,7 @@ export default function CategorySelect({
   const [open, setOpen] = useState(false);
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState(selectedCategory ?? "");
 
   const categoriesToShow = useMemo(() => {
     return categories?.filter((category) => category.type === type);
@@ -45,7 +45,7 @@ export default function CategorySelect({
       const userCategories = await getUserCategories();
       setCategories(userCategories as CategoryType[]);
       setCategory(
-        userCategories?.find((c) => c?.id === selectedCategory)?.id ?? "",
+        userCategories?.find((c) => c?.id === selectedCategory)?.id ?? ""
       );
       setCategoriesLoading(false);
     })();
@@ -79,8 +79,8 @@ export default function CategorySelect({
                 {!type
                   ? "Select a transaction type first."
                   : categoriesLoading
-                    ? "Loading categories..."
-                    : "No category found."}
+                  ? "Loading categories..."
+                  : "No category found."}
                 {/* <Button
                   variant="ghost"
                   className="flex items-center w-full mt-2"
@@ -106,7 +106,7 @@ export default function CategorySelect({
                     <Check
                       className={cn(
                         "mr-2 h-4 w-4",
-                        category === item.id ? "opacity-100" : "opacity-0",
+                        category === item.id ? "opacity-100" : "opacity-0"
                       )}
                     />
                     <div className="flex flex-col overflow-hidden">
