@@ -42,3 +42,15 @@ export type CategoryType = {
   type: TransactionEnum;
   isPublic: boolean;
 };
+
+export type BudgetType = {
+  id: string;
+  userId: string;
+  categoryId: string;
+  period: PeriodEnum;
+  amount: number;
+  startDate: Date;
+  createdAt: Date | null;
+  updatedAt: Date | null;
+  deletedAt: Date | null;
+};

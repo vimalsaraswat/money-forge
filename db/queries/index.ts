@@ -158,10 +158,16 @@ export const DB = {
       .orderBy(desc(budgets.updatedAt));
   },
 
-  getBudgetById: async (budgetId: string) => {
+  getBudgetById: async (budgetId: string, userId: string) => {
     return await db
       .select()
       .from(budgets)
-      .where(and(eq(budgets.id, budgetId), isNull(budgets.deletedAt)));
+      .where(
+        and(
+          eq(budgets.id, budgetId),
+          isNull(budgets.deletedAt),
+          eq(budgets.userId, userId),
+        ),
+      );
   },
 };

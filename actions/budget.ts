@@ -22,6 +22,7 @@ const BudgetSchema = z.object({
 
 type PrevState =
   | {
+      budgetId?: string;
       success?: boolean;
       message?: string;
       errors?: {
@@ -39,6 +40,8 @@ export async function handleBudget(prevState: PrevState, formData: FormData) {
     const { categoryId, startDate, period, amount } = Object.fromEntries(
       formData,
     ) as Record<string, string>;
+
+    console.log(formData);
 
     const initialValues = {
       amount,
@@ -61,7 +64,38 @@ export async function handleBudget(prevState: PrevState, formData: FormData) {
       return {
         success: false,
         message: "Unauthorised",
-        initialValues,
+      };
+    }
+
+    if (prevState?.budgetId) {
+      const budgetId = prevState.budgetId;
+      const oldBudget = await DB.getBudgetById(budgetId, session.user.id);
+
+      if (oldBudget.length !== 1) {
+        return {
+          success: false,
+          message: "Budget does not exist",
+          budgetId,
+        };
+      }
+
+      if (oldBudget[0].userId !== session.user.id) {
+        return {
+          success: false,
+          message: "Unauthorised",
+          budgetId,
+        };
+      }
+
+      await DB.updateBudget(budgetId, {
+        ...validatedFields.data,
+        userId: session.user.id,
+      });
+
+      revalidatePath("/dashboard/budgets");
+      return {
+        success: true,
+        message: "Budget updated successfully!",
       };
     }
 

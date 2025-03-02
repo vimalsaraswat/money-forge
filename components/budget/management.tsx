@@ -1,4 +1,4 @@
-import { AlertCircle, Plus } from "lucide-react";
+import { AlertCircle, Pencil, Plus } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import {
   Card,
@@ -61,23 +61,11 @@ export default function BudgetManagement({ budgets }: { budgets: Budget[] }) {
                   <CardTitle className="flex justify-between">
                     {budget.category}
                     <div className="flex items-center gap-2">
-                      {/* <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => {
-                              setEditingBudget(budget);
-                              setShowEditDialog(true);
-                            }}
-                          >
-                            <Edit2 className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleDeleteBudget(budget.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button> */}
+                      <Button variant="outline" size="icon" asChild>
+                        <Link href={`/dashboard/budgets/${budget?.id}/edit`}>
+                          <Pencil />
+                        </Link>
+                      </Button>
                     </div>
                   </CardTitle>
                   <CardDescription>
