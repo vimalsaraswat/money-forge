@@ -31,8 +31,8 @@ export default function BudgetForm({
   budget,
   editMode,
 }: {
-  budget: BudgetType;
-  editMode: boolean;
+  budget?: BudgetType;
+  editMode?: boolean;
 }) {
   const initialFormState = {
     amount: String(budget?.amount) ?? "",
@@ -156,8 +156,8 @@ export default function BudgetForm({
                   ? "Updating..."
                   : "Adding..."
                 : editMode
-                ? "Update Budget"
-                : "Add Budget"}
+                  ? "Update Budget"
+                  : "Add Budget"}
             </Button>
           </div>
         </form>
@@ -171,7 +171,7 @@ export function DeleteBudget({ budgetId }: { budgetId: string }) {
 
   const [state, action, isPending] = useActionState(
     deleteBudget.bind(null, budgetId),
-    null
+    null,
   );
 
   useEffect(() => {
