@@ -147,12 +147,18 @@ export const DB = {
         id: budgets.id,
         category: categories.name,
         period: budgets.period,
-        spent: sql<number>`COALESCE(SUM(${transactions.amount}), 0)`,
+        spent: sql<number>`COALESCE(SUM(CASE WHEN ${transactions.deletedAt} IS NULL THEN ${transactions.amount} ELSE 0 END), 0)`,
         amount: budgets.amount,
       })
       .from(budgets)
       .leftJoin(categories, eq(budgets.categoryId, categories.id))
-      .leftJoin(transactions, eq(categories.id, transactions.categoryId))
+      .leftJoin(
+        transactions,
+        and(
+          eq(budgets.categoryId, transactions.categoryId),
+          eq(budgets.userId, transactions.userId),
+        ),
+      )
       .where(and(eq(budgets.userId, userId), isNull(budgets.deletedAt)))
       .groupBy(budgets.id, categories.name, budgets.amount)
       .orderBy(desc(budgets.updatedAt));
