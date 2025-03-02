@@ -12,6 +12,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { formatCurrency } from "@/lib/utils";
+import { DeleteBudget } from "./budget-form";
 
 type Budget = {
   id: string;
@@ -66,6 +67,7 @@ export default function BudgetManagement({ budgets }: { budgets: Budget[] }) {
                           <Pencil />
                         </Link>
                       </Button>
+                      <DeleteBudget budgetId={budget?.id} />
                     </div>
                   </CardTitle>
                   <CardDescription>

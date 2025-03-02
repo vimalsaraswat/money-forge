@@ -116,3 +116,47 @@ export async function handleBudget(prevState: PrevState, formData: FormData) {
     return { message: "Failed to create budget." };
   }
 }
+
+export async function deleteBudget(budgetId: string) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return {
+        success: false,
+        message: "Unauthorised",
+      };
+    }
+
+    const oldBudget = await DB.getBudgetById(budgetId, session.user.id);
+
+    if (oldBudget.length !== 1) {
+      return {
+        success: false,
+        message: "Budget does not exist",
+      };
+    }
+    if (oldBudget[0].userId !== session.user.id) {
+      return {
+        success: false,
+        message: "Unauthorised",
+        initialValues: {
+          id: budgetId,
+        },
+      };
+    }
+
+    await DB.deleteBudget(budgetId);
+
+    revalidatePath("/dashboard/budgets");
+    return {
+      success: true,
+      message: "Budget deleted successfully!",
+    };
+  } catch (error) {
+    console.error("Failed to delete budget:", error);
+    return {
+      success: false,
+      message: "Failed to delete budget",
+    };
+  }
+}
