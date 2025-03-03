@@ -37,7 +37,9 @@ const TransactionSchema = z.object({
 
 type PrevState =
   | {
+      transactionId?: string;
       success?: boolean;
+      message?: string;
       errors?: {
         amount?: string[];
         type?: string[];
@@ -45,15 +47,6 @@ type PrevState =
         date?: string[];
         description?: string[];
       };
-      initialValues?: {
-        id?: string;
-        amount?: string;
-        type?: string;
-        categoryId?: string;
-        date?: string;
-        description?: string;
-      };
-      message?: string;
     }
   | undefined
   | null;
@@ -84,7 +77,6 @@ export async function handleTransaction(
         success: false,
         errors: validatedFields.error.flatten().fieldErrors,
         message: "Missing Fields. Failed to add product.",
-        initialValues,
       };
     }
 
@@ -93,7 +85,6 @@ export async function handleTransaction(
       return {
         success: false,
         message: "Unauthorised",
-        initialValues,
       };
     }
 
@@ -103,7 +94,6 @@ export async function handleTransaction(
       return {
         success: false,
         meassage: "Category does not exist",
-        initialValues,
       };
     }
     const transactionData = {
@@ -114,8 +104,8 @@ export async function handleTransaction(
       date: new Date(validatedFields.data.date),
     };
 
-    if (prevState?.initialValues?.id) {
-      const transactionId = prevState.initialValues.id;
+    if (prevState?.transactionId) {
+      const transactionId = prevState.transactionId;
       const oldTransaction = await DB.getTransactionById(
         transactionId,
         session.user.id,
@@ -125,14 +115,14 @@ export async function handleTransaction(
         return {
           success: false,
           message: "Transaction does not exist",
-          initialValues,
+          transactionId,
         };
       }
       if (oldTransaction[0].userId !== session.user.id) {
         return {
           success: false,
           message: "Unauthorised",
-          initialValues,
+          transactionId,
         };
       }
 
@@ -151,10 +141,7 @@ export async function handleTransaction(
       return {
         success: true,
         message: "Transaction updated successfully!",
-        initialValues: {
-          ...initialValues,
-          id: transactionId,
-        },
+        transactionId,
       };
     }
 
@@ -200,9 +187,6 @@ export async function deleteTransaction(transactionId: string) {
       return {
         success: false,
         message: "Unauthorised",
-        initialValues: {
-          id: transactionId,
-        },
       };
     }
 

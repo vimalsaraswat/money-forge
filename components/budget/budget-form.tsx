@@ -84,7 +84,13 @@ export default function BudgetForm({
             <InputWithLabel label="Category" error={errors?.categoryId?.[0]}>
               <CategorySelect
                 selectedCategory={formState?.categoryId || ""}
-                type={TransactionEnum.EXPENSE}
+                type="expense"
+                onChange={(categoryId) =>
+                  setFormState((prevState) => ({
+                    ...prevState,
+                    categoryId,
+                  }))
+                }
                 name="categoryId"
               />
             </InputWithLabel>

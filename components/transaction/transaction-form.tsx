@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 import { deleteTransaction, handleTransaction } from "@/actions";
-import { TransactionType } from "@/types";
+import { TransactionEnum, TransactionType } from "@/types";
 import {
   Dialog,
   DialogContent,
@@ -31,33 +31,39 @@ export default function TransactionForm({
   transaction?: TransactionType;
   editMode?: boolean;
 }) {
-  const initialState = {
-    success: false,
-    errors: {},
-    message: "",
-    initialValues: {
-      id: transaction?.id ?? "",
-      type: transaction?.type ?? "",
-      amount: String(transaction?.amount ?? ""),
-      date:
-        (transaction?.date?.toDateString() || new Date()?.toDateString()) ?? "",
-      categoryId: transaction?.categoryId ?? "",
-      description: transaction?.description ?? "",
-    },
+  const initialFormState = {
+    type: transaction?.type ?? TransactionEnum.EXPENSE,
+    amount: String(transaction?.amount ?? ""),
+    date:
+      (transaction?.date?.toDateString() || new Date()?.toDateString()) ?? "",
+    categoryId: transaction?.categoryId ?? "",
+    description: transaction?.description ?? "",
   };
-  const [type, setType] = useState(initialState?.initialValues?.type);
-  const [date, setDate] = useState(initialState?.initialValues?.date);
-  const [state, action, isPending] = useActionState(
-    handleTransaction,
-    initialState,
-  );
+
+  const [formState, setFormState] = useState(initialFormState);
+  const [state, action, isPending] = useActionState(handleTransaction, {
+    transactionId: transaction?.id ?? "",
+    message: "",
+    success: false,
+  });
   const router = useRouter();
   const errors = state?.errors;
-  const values = state?.initialValues;
+
+  const formAction = (formData: FormData) => {
+    if (JSON.stringify(initialFormState) === JSON.stringify(formState)) {
+      toast.info("No changes made");
+      return;
+    }
+    action(formData);
+  };
 
   useEffect(() => {
     if (state?.message?.length) {
-      toast(state?.message);
+      if (state?.success) {
+        toast.success(state?.message);
+      } else {
+        toast.error(state?.message);
+      }
     }
     if (state?.success) {
       router.replace("/dashboard/transactions");
@@ -68,12 +74,17 @@ export default function TransactionForm({
       {state?.success ? (
         <Spinner />
       ) : (
-        <form action={action} className="space-y-4 container max-w-md mx-auto">
+        <form
+          action={formAction}
+          className="space-y-4 container max-w-md mx-auto"
+        >
           <div className="flex flex-col gap-2">
             <Label>Transaction Type</Label>
             <RadioGroup
-              defaultValue={values?.type}
-              onValueChange={(value) => setType(value)}
+              value={formState?.type}
+              onValueChange={(value) =>
+                setFormState({ ...formState, type: value as TransactionEnum })
+              }
               name="type"
               className={cn(
                 buttonVariants({ variant: "outline" }),
@@ -81,11 +92,11 @@ export default function TransactionForm({
               )}
             >
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="expense" id="expense" />
+                <RadioGroupItem value={TransactionEnum.EXPENSE} id="expense" />
                 <Label htmlFor="expense">Expense</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="income" id="income" />
+                <RadioGroupItem value={TransactionEnum.INCOME} id="income" />
                 <Label htmlFor="income">Income</Label>
               </div>
             </RadioGroup>
@@ -102,16 +113,28 @@ export default function TransactionForm({
             name="amount"
             type="number"
             min={1}
-            defaultValue={values?.amount}
+            value={formState?.amount}
+            onChange={(e) =>
+              setFormState((prevState) => ({
+                ...prevState,
+                amount: e.target.value,
+              }))
+            }
             placeholder="Enter amount"
             error={errors?.amount?.[0]}
             required
           />
 
-          <InputWithLabel label="Category">
+          <InputWithLabel label="Category" error={errors?.categoryId?.[0]}>
             <CategorySelect
-              selectedCategory={values?.categoryId || ""}
-              type={type}
+              selectedCategory={formState?.categoryId || ""}
+              type={formState?.type}
+              onChange={(categoryId) =>
+                setFormState((prevState) => ({
+                  ...prevState,
+                  categoryId,
+                }))
+              }
               name="categoryId"
             />
           </InputWithLabel>
@@ -120,9 +143,12 @@ export default function TransactionForm({
             variant="date"
             label="Date"
             mode="single"
-            selected={new Date(date)}
+            selected={new Date(formState?.date)}
             onSelect={(date) =>
-              setDate(new Date(date || new Date())?.toDateString())
+              setFormState((prevState) => ({
+                ...prevState,
+                date: new Date(date || new Date()).toDateString(),
+              }))
             }
             disabled={(date) =>
               date > new Date() || date < new Date("1900-01-01")
@@ -130,13 +156,24 @@ export default function TransactionForm({
             initialFocus
             error={errors?.date?.[0]}
           />
-          <input className="hidden" name="date" defaultValue={date} />
+          <input
+            className="hidden"
+            name="date"
+            defaultValue={formState?.date}
+          />
 
           <InputWithLabel
             variant="textarea"
-            label="Notes (Optional)"
-            id="notes"
-            defaultValue={values?.description}
+            label="Description (Optional)"
+            id="description"
+            name="description"
+            value={formState?.description}
+            onChange={(e) =>
+              setFormState((prevState) => ({
+                ...prevState,
+                description: e.target.value,
+              }))
+            }
             placeholder="Add notes about this transaction"
             error={errors?.description?.[0]}
           />
@@ -172,7 +209,7 @@ export function DeleteTransaction({
 
   useEffect(() => {
     if (state?.message?.length ?? -1 > 0) {
-      toast(state?.message);
+      toast.success(state?.message);
     }
     if (state?.success) {
       setDialogOpen(false);
