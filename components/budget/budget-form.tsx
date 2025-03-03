@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { BudgetType, PeriodEnum, TransactionEnum } from "@/types";
+import { BudgetType, PeriodEnum } from "@/types";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
