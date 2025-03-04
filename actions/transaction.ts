@@ -126,16 +126,7 @@ export async function handleTransaction(
         };
       }
 
-      const updateData = {
-        categoryId:
-          (transactionData.categoryId || oldTransaction[0].categoryId) ?? "",
-        description:
-          (transactionData.description || oldTransaction[0].description) ?? "",
-        amount: transactionData.amount || oldTransaction[0].amount,
-        date: transactionData.date || oldTransaction[0].date,
-        type: transactionData.type || oldTransaction[0].type,
-      };
-      await DB.updateTransaction(transactionId, updateData);
+      await DB.updateTransaction(transactionId, transactionData);
 
       revalidatePath("/dashboard/transactions");
       return {
