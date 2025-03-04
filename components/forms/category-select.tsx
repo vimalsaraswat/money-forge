@@ -150,7 +150,8 @@ export default function CategorySelect({
       <input
         className="hidden"
         name={name ?? "category"}
-        defaultValue={category}
+        value={category}
+        onChange={() => {}}
       />
     </div>
   );

@@ -129,7 +129,8 @@ export default function BudgetForm({
               <input
                 className="hidden"
                 name="startDate"
-                defaultValue={formState?.startDate}
+                value={formState?.startDate}
+                onChange={() => {}}
               />
             </>
 

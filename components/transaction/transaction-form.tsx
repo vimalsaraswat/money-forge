@@ -159,7 +159,8 @@ export default function TransactionForm({
           <input
             className="hidden"
             name="date"
-            defaultValue={formState?.date}
+            value={formState?.date}
+            onChange={() => {}}
           />
 
           <InputWithLabel
