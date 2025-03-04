@@ -49,7 +49,10 @@ export type BudgetType = {
   categoryId: string;
   period: PeriodEnum;
   amount: number;
+  spent?: number;
+  category: string;
   startDate: Date;
+  endDate: Date;
   createdAt: Date | null;
   updatedAt: Date | null;
   deletedAt: Date | null;

@@ -13,14 +13,7 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import { formatCurrency } from "@/lib/utils";
 import { DeleteBudget } from "./budget-form";
-
-type Budget = {
-  id: string;
-  category: string | null;
-  period: string;
-  spent: number;
-  amount: number;
-};
+import { BudgetType } from "@/types";
 
 const calculateProgress = (spent: number, amount: number) => {
   return (spent / amount) * 100;
@@ -32,7 +25,11 @@ const getProgressColor = (progress: number) => {
   return "bg-primary";
 };
 
-export default function BudgetManagement({ budgets }: { budgets: Budget[] }) {
+export default function BudgetManagement({
+  budgets,
+}: {
+  budgets: BudgetType[];
+}) {
   return (
     <div className="space-y-6 flex-1">
       {!(budgets?.length > 0) ? (
@@ -53,7 +50,10 @@ export default function BudgetManagement({ budgets }: { budgets: Budget[] }) {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {budgets?.map((budget) => {
-            const progress = calculateProgress(budget.spent, budget.amount);
+            const progress = calculateProgress(
+              budget?.spent ?? 0,
+              budget.amount,
+            );
             const progressColor = getProgressColor(progress);
 
             return (
@@ -70,17 +70,23 @@ export default function BudgetManagement({ budgets }: { budgets: Budget[] }) {
                       <DeleteBudget budgetId={budget?.id} />
                     </div>
                   </CardTitle>
-                  <CardDescription>
-                    {budget.period.charAt(0).toUpperCase() +
-                      budget.period.slice(1)}{" "}
-                    Budget
+                  <CardDescription className="flex flex-col lg:flex-row lg:items-center gap-2">
+                    <span>
+                      {budget.period.charAt(0).toUpperCase() +
+                        budget.period.slice(1)}{" "}
+                      Budget
+                    </span>
+                    <span>
+                      {budget?.startDate?.toLocaleDateString()} -{" "}
+                      {budget?.endDate?.toLocaleDateString()}
+                    </span>
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-2">
                   <div className="flex justify-between">
                     <span>
-                      {formatCurrency(budget.spent)} /{" "}
-                      {formatCurrency(budget.amount)}
+                      {formatCurrency(budget?.spent ?? 0)} /{" "}
+                      {formatCurrency(budget?.amount ?? 0)}
                     </span>
                     <span>{Math.round(progress)}%</span>
                   </div>
@@ -93,14 +99,15 @@ export default function BudgetManagement({ budgets }: { budgets: Budget[] }) {
                       <AlertCircle className="h-4 w-4 stroke-warning" />
                       <AlertTitle className="text-warning">Warning</AlertTitle>
                       <AlertDescription>
-                        {`You've nearly exceeded your budget for ${budget.category}`}
+                        {`You've nearly exceeded your budget for ${budget?.category}`}
                       </AlertDescription>
                     </Alert>
                   )}
                 </CardContent>
                 <CardFooter>
                   <p className="text-sm text-muted-foreground">
-                    Remaining: {formatCurrency(budget.amount - budget.spent)}
+                    Remaining:{" "}
+                    {formatCurrency(budget.amount - (budget?.spent ?? 0))}
                   </p>
                 </CardFooter>
               </Card>

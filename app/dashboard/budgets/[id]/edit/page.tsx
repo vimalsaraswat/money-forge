@@ -29,10 +29,10 @@ export default async function EditBudgetForm({
     <Card>
       <CardHeader>
         <CardTitle>
-          <h2 className="text-2xl font-bold">Add New Transaction</h2>
+          <h2 className="text-2xl font-bold text-center">Edit Budget</h2>
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex-1">
+      <CardContent className="flex-1 mx-auto max-w-screen-sm w-full">
         <BudgetForm budget={budget[0]} editMode={true} />
       </CardContent>
     </Card>

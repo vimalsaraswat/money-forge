@@ -147,8 +147,10 @@ export const DB = {
         id: budgets.id,
         category: categories.name,
         period: budgets.period,
-        spent: sql<number>`COALESCE(SUM(CASE WHEN ${transactions.deletedAt} IS NULL THEN ${transactions.amount} ELSE 0 END), 0)`,
+        spent: sql<number>`COALESCE(SUM(CASE WHEN ${transactions.deletedAt} IS NULL AND ${transactions.date} >= ${budgets.startDate} AND ${transactions.date} <= ${budgets.endDate} THEN ${transactions.amount} ELSE 0 END), 0)`,
         amount: budgets.amount,
+        startDate: budgets.startDate,
+        endDate: budgets.endDate,
       })
       .from(budgets)
       .leftJoin(categories, eq(budgets.categoryId, categories.id))
