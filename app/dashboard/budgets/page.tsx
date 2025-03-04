@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import BudgetManagement from "@/components/budget/management";
 import { Button } from "@/components/ui/button";
 import { DB } from "@/db/queries";
+import { BudgetListType } from "@/types";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -12,7 +13,7 @@ export default async function BudgentsPage() {
     notFound();
   }
 
-  const budgets = await DB.getBudgets(session?.user?.id);
+  const budgets = (await DB.getBudgets(session?.user?.id)) as BudgetListType;
 
   return (
     <div className="flex flex-col gap-2 relative">

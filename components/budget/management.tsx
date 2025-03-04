@@ -13,7 +13,7 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import { formatCurrency } from "@/lib/utils";
 import { DeleteBudget } from "./budget-form";
-import { BudgetType } from "@/types";
+import { BudgetListType } from "@/types";
 
 const calculateProgress = (spent: number, amount: number) => {
   return (spent / amount) * 100;
@@ -28,7 +28,7 @@ const getProgressColor = (progress: number) => {
 export default function BudgetManagement({
   budgets,
 }: {
-  budgets: BudgetType[];
+  budgets: BudgetListType;
 }) {
   return (
     <div className="space-y-6 flex-1">

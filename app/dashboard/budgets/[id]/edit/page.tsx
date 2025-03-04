@@ -18,10 +18,10 @@ export default async function EditBudgetForm({
   const budgetId = (await params)?.id;
 
   const budget = budgetId
-    ? ((await DB.getBudgetById(budgetId, session.user.id)) as BudgetType[])
-    : [];
+    ? ((await DB.getBudgetById(budgetId, session.user.id)) as BudgetType[])[0]
+    : null;
 
-  if (!budget?.length) {
+  if (!budget) {
     notFound();
   }
 
@@ -33,7 +33,7 @@ export default async function EditBudgetForm({
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-1 mx-auto max-w-screen-sm w-full">
-        <BudgetForm budget={budget[0]} editMode={true} />
+        <BudgetForm budget={budget} editMode={true} />
       </CardContent>
     </Card>
   );
