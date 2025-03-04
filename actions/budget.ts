@@ -11,7 +11,9 @@ const BudgetSchema = z.object({
     .number()
     .gt(0, "Amount must be greater than zero")
     .max(1000000, "Amount is too large"),
-  categoryId: z.string().min(1, "Category is required"),
+  categoryId: z.string({
+    errorMap: () => ({ message: "Please select a category." }),
+  }),
   startDate: z.string().min(1, "Date is required").pipe(z.coerce.date()),
   period: z
     .nativeEnum(PeriodEnum)
@@ -38,9 +40,8 @@ type PrevState =
 export async function handleBudget(prevState: PrevState, formData: FormData) {
   try {
     const { categoryId, startDate, period, amount } = Object.fromEntries(
-      formData
+      formData,
     ) as Record<string, string>;
-
     const initialValues = {
       amount,
       categoryId,
@@ -56,6 +57,18 @@ export async function handleBudget(prevState: PrevState, formData: FormData) {
         message: "Missing or invalid fields. Failed to Create Budget.",
       };
     }
+
+    const endDate = (() => {
+      const date = new Date(validatedFields?.data?.startDate);
+      switch (validatedFields?.data?.period) {
+        case PeriodEnum.MONTHLY:
+          return new Date(date.setMonth(date.getMonth() + 1));
+        case PeriodEnum.YEARLY:
+          return new Date(date.setMonth(date.getMonth() + 12));
+        default:
+          throw new Error("Invalid period");
+      }
+    })();
 
     const session = await auth();
     if (!session?.user?.id) {
@@ -87,6 +100,7 @@ export async function handleBudget(prevState: PrevState, formData: FormData) {
 
       await DB.updateBudget(budgetId, {
         ...validatedFields.data,
+        endDate,
         userId: session.user.id,
       });
 
@@ -99,6 +113,7 @@ export async function handleBudget(prevState: PrevState, formData: FormData) {
 
     DB.createBudget({
       ...validatedFields.data,
+      endDate,
       userId: session.user.id,
     });
 
@@ -110,7 +125,7 @@ export async function handleBudget(prevState: PrevState, formData: FormData) {
     };
   } catch (err) {
     const error = err as Error;
-    console.error(error?.message);
+    console.error(error?.message || "Failed to create budget.");
     return { message: "Failed to create budget." };
   }
 }

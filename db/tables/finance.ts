@@ -66,6 +66,7 @@ export const budgets = createTable("budgets", {
   period: budgetPeriodEnum("period").notNull(),
   amount: doublePrecision("amount").notNull(),
   startDate: timestamp("startDate", { mode: "date" }).notNull(),
+  endDate: timestamp("endDate", { mode: "date" }).notNull(),
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
   updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow(),
   deletedAt: timestamp("deletedAt", { mode: "date" }),
