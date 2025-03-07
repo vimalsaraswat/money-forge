@@ -55,8 +55,8 @@ export async function handleTransaction(
   prevState: PrevState,
   formData: FormData,
 ) {
-  after(() => {
-    handleBudgetAlert();
+  after(async () => {
+    await handleBudgetAlert();
   });
   try {
     const { type, amount, categoryId, date, description } = Object.fromEntries(
