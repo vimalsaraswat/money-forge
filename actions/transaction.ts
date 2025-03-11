@@ -21,8 +21,8 @@ const TransactionSchema = z.object({
   type: z.nativeEnum(TransactionEnum, {
     errorMap: () => ({ message: "Please select a transaction type." }),
   }),
-  categoryId: z.string({
-    errorMap: () => ({ message: "Please select a category." }),
+  categoryId: z.string().uuid({
+    message: "Please select a category.",
   }),
   date: z.string().refine((val) => !isNaN(new Date(val).getTime()), {
     message: "Invalid date format.",
@@ -55,8 +55,8 @@ export async function handleTransaction(
   prevState: PrevState,
   formData: FormData,
 ) {
-  after(() => {
-    handleBudgetAlert();
+  after(async () => {
+    await handleBudgetAlert();
   });
   try {
     const { type, amount, categoryId, date, description } = Object.fromEntries(

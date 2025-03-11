@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { BudgetType, PeriodEnum } from "@/types";
+import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -25,7 +26,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { Trash } from "lucide-react";
 
 export default function BudgetForm({
   budget,
@@ -109,6 +109,7 @@ export default function BudgetForm({
                 })
               }
               error={errors?.amount?.[0]}
+              required
             />
 
             <>
@@ -125,6 +126,7 @@ export default function BudgetForm({
                 }
                 disabled={(date) => date < new Date("1900-01-01")}
                 error={errors?.startDate?.[0]}
+                required
               />
               <input
                 className="hidden"
@@ -175,7 +177,6 @@ export default function BudgetForm({
 
 export function DeleteBudget({ budgetId }: { budgetId: string }) {
   const [dialogOpen, setDialogOpen] = useState(false);
-
   const [state, action, isPending] = useActionState(
     deleteBudget.bind(null, budgetId),
     null,

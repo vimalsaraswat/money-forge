@@ -11,8 +11,8 @@ const BudgetSchema = z.object({
     .number()
     .gt(0, "Amount must be greater than zero")
     .max(1000000, "Amount is too large"),
-  categoryId: z.string({
-    errorMap: () => ({ message: "Please select a category." }),
+  categoryId: z.string().uuid({
+    message: "Please select a category.",
   }),
   startDate: z.string().min(1, "Date is required").pipe(z.coerce.date()),
   period: z
