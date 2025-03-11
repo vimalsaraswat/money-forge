@@ -31,7 +31,9 @@ npm install
 ```
 
 4.  Set up your database connection
+
 5.  Run the database migrations
+
 ```bash
 npx drizzle-kit generate
 npx drizzle-kit push
