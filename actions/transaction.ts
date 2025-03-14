@@ -2,38 +2,10 @@
 
 import { auth } from "@/auth";
 import { DB } from "@/db/queries";
-import { TransactionEnum } from "@/types";
 import { revalidatePath } from "next/cache";
 import { after } from "next/server";
-import { z } from "zod";
 import { handleBudgetAlert } from "./alert";
-
-const TransactionSchema = z.object({
-  amount: z.string().refine(
-    (val) => {
-      const parsed = parseFloat(val);
-      return !isNaN(parsed) && parsed > 0;
-    },
-    {
-      message: "Amount must be a valid number greater than zero.",
-    },
-  ),
-  type: z.nativeEnum(TransactionEnum, {
-    errorMap: () => ({ message: "Please select a transaction type." }),
-  }),
-  categoryId: z.string().uuid({
-    message: "Please select a category.",
-  }),
-  date: z.string().refine((val) => !isNaN(new Date(val).getTime()), {
-    message: "Invalid date format.",
-  }),
-  description: z
-    .string()
-    .max(255, {
-      message: "Description must be less than 200 characters.",
-    })
-    .optional(),
-});
+import { TransactionSchema } from "@/types/zod-schema";
 
 type PrevState =
   | {
@@ -55,9 +27,6 @@ export async function handleTransaction(
   prevState: PrevState,
   formData: FormData,
 ) {
-  after(async () => {
-    await handleBudgetAlert();
-  });
   try {
     const { type, amount, categoryId, date, description } = Object.fromEntries(
       formData,
@@ -128,7 +97,11 @@ export async function handleTransaction(
 
       await DB.updateTransaction(transactionId, transactionData);
 
+      after(async () => {
+        await handleBudgetAlert();
+      });
       revalidatePath("/dashboard/transactions");
+
       return {
         success: true,
         message: "Transaction updated successfully!",
@@ -142,7 +115,11 @@ export async function handleTransaction(
     };
     await DB.createTransaction(createTransactionData);
 
+    after(async () => {
+      await handleBudgetAlert();
+    });
     revalidatePath("/dashboard/transactions");
+
     return {
       success: true,
       message: "Transaction added successfully!",
