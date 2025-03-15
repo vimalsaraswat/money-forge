@@ -1,31 +1,50 @@
-// import { useState } from "react"
-// import { Button } from "@/components/ui/button"
-// import { Input } from "@/components/ui/input"
-// import { Label } from "@/components/ui/label"
-// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-
+import { auth } from "@/auth";
 import { SignOut } from "@/components/auth";
+import { Button } from "@/components/ui/button";
+import UserForm from "@/components/user-form";
+import { Pencil } from "lucide-react";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 
-export default function Profile() {
-  // const [name, setName] = useState("John Doe")
-  // const [email, setEmail] = useState("john@example.com")
+export default async function Profile({
+  searchParams,
+}: {
+  searchParams: Promise<{ edit: boolean | undefined }>;
+}) {
+  const session = await auth();
+  const editMode = !!(await searchParams)?.edit;
 
-  // const handleSubmit = (e: React.FormEvent) => {
-  //   e.preventDefault()
-  //   // Here you would typically update the user's profile
-  //   console.log("Profile updated", { name, email })
-  // }
+  if (!session?.user?.id) {
+    notFound();
+  }
+
+  const user = session?.user;
 
   return (
     <div className="container h-full mx-auto p-4 flex flex-col">
-      <div className="flex justify-between">
-        <h1 className="text-3xl font-bold mb-6">User Profile</h1>
-        <SignOut variant="destructive" />
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-gray-100">
+          User Profile
+        </h1>
+        <div className="flex items-center gap-2">
+          {!editMode && (
+            <Button asChild variant="outline">
+              <Link href="/profile?edit=true">
+                <Pencil /> Edit
+              </Link>
+            </Button>
+          )}
+          <SignOut variant="destructive" />
+        </div>
       </div>
-
-      <div className="text-center flex-1 grid place-items-center">
-        <p className="text-lg text-gray-500 animate-pulse">Coming Soon...</p>
-      </div>
+      <UserForm
+        editMode={editMode}
+        user={{
+          name: user?.name ?? "",
+          image: user?.image ?? "",
+          email: user?.email ?? "",
+        }}
+      />
       {/* <Card>
         <CardHeader>
           <CardTitle>Edit Profile</CardTitle>
