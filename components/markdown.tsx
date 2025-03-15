@@ -4,7 +4,7 @@ import remarkGfm from "remark-gfm";
 
 export const NonMemoizedMarkdown = ({ children }: { children: string }) => {
   const components: Components = {
-    code: ({ node, className, children, ...props }) => {
+    code: ({ className, children, ...props }) => {
       // const match = /language-(\w+)/.exec(className || "");
       // return !inline && match ? (
       //   <pre
@@ -23,28 +23,28 @@ export const NonMemoizedMarkdown = ({ children }: { children: string }) => {
         </code>
       );
     },
-    ol: ({ node, children, ...props }) => {
+    ol: ({ children, ...props }) => {
       return (
         <ol className="list-decimal list-inside ml-4" {...props}>
           {children}
         </ol>
       );
     },
-    li: ({ node, children, ...props }) => {
+    li: ({ children, ...props }) => {
       return (
         <li className="py-1" {...props}>
           {children}
         </li>
       );
     },
-    ul: ({ node, children, ...props }) => {
+    ul: ({ children, ...props }) => {
       return (
         <ul className="list-decimal list-inside ml-4" {...props}>
           {children}
         </ul>
       );
     },
-    strong: ({ node, children, ...props }) => {
+    strong: ({ children, ...props }) => {
       return (
         <span className="font-semibold" {...props}>
           {children}
