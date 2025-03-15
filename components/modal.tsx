@@ -3,7 +3,6 @@
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
-import { DialogContent } from "./ui/dialog";
 
 export function Modal({ children }: { children: React.ReactNode }) {
   const router = useRouter();
