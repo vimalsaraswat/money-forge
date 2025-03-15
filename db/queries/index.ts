@@ -2,8 +2,21 @@ import { db } from "@/db/drizzle";
 import { budgets, categories, transactions } from "@/db/tables/finance";
 import { TransactionType } from "@/types";
 import { and, desc, eq, isNull, or, sql } from "drizzle-orm";
+import { users } from "../schema";
 
 export const DB = {
+  // ==================== Users ====================
+  getUser: async (userId: string) => {
+    return await db.select().from(users).where(eq(users.id, userId));
+  },
+
+  updateUser: async (
+    userId: string,
+    user: Partial<typeof users.$inferInsert>,
+  ) => {
+    return await db.update(users).set(user).where(eq(users.id, userId));
+  },
+
   // ==================== Transactions ====================
   createTransaction: async (transaction: typeof transactions.$inferInsert) => {
     return await db.insert(transactions).values(transaction);
@@ -26,12 +39,17 @@ export const DB = {
       .where(eq(transactions.id, transactionId));
   },
 
-  getTransactions: async (userId: string) => {
+  getTransactions: async (
+    userId: string,
+    limit: number = 50,
+    order: "date" | "updatedAt" = "date",
+  ) => {
     return await db
       .select({
         id: transactions.id,
         amount: transactions.amount,
         category: categories.name,
+        categoryId: transactions.categoryId,
         type: categories.type,
         date: transactions.date,
         description: transactions.description,
@@ -43,7 +61,8 @@ export const DB = {
       .where(
         and(eq(transactions.userId, userId), isNull(transactions.deletedAt)),
       )
-      .orderBy(desc(transactions.date));
+      .orderBy(desc(transactions[order]))
+      .limit(limit);
   },
 
   getTransactionById: async (transactionId: string, userId: string) => {
@@ -146,6 +165,7 @@ export const DB = {
       .select({
         id: budgets.id,
         category: categories.name,
+        categoryId: budgets.categoryId,
         period: budgets.period,
         spent: sql<number>`COALESCE(SUM(CASE WHEN ${transactions.deletedAt} IS NULL AND ${transactions.date} >= ${budgets.startDate} AND ${transactions.date} <= ${budgets.endDate} THEN ${transactions.amount} ELSE 0 END), 0)`,
         amount: budgets.amount,

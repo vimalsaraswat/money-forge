@@ -1,44 +1,50 @@
-import { SignOut } from "@/components/auth";
 import { auth } from "@/auth";
-import Image from "next/image";
+import { SignOut } from "@/components/auth";
+import { Button } from "@/components/ui/button";
+import UserForm from "@/components/user-form";
+import { Pencil } from "lucide-react";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 
-export default async function Profile() {
+export default async function Profile({
+  searchParams,
+}: {
+  searchParams: Promise<{ edit: boolean | undefined }>;
+}) {
   const session = await auth();
+  const editMode = !!(await searchParams)?.edit;
+
+  if (!session?.user?.id) {
+    notFound();
+  }
+
+  const user = session?.user;
 
   return (
     <div className="container h-full mx-auto p-4 flex flex-col">
-      <div className="flex justify-between">
-        <h1 className="text-3xl font-bold mb-6">User Profile</h1>
-        <SignOut variant="destructive" />
-      </div>
-      <div className="flex-1 flex flex-col items-center justify-center gap-4">
-        <div className="relative size-32 md:size-40 rounded-full overflow-hidden">
-          {session?.user?.image && (
-            <Image
-              height={200}
-              width={200}
-              src={session?.user?.image}
-              alt="Profile Picture"
-              className="object-cover w-full h-full"
-            />
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-gray-100">
+          User Profile
+        </h1>
+        <div className="flex items-center gap-2">
+          {!editMode && (
+            <Button asChild variant="outline">
+              <Link href="/profile?edit=true">
+                <Pencil /> Edit
+              </Link>
+            </Button>
           )}
-          {/* <div className="absolute inset-0 bg-black opacity-0 hover:opacity-60 transition-opacity duration-300 flex items-center justify-center">
-            <span className="text-white text-sm">Change</span>
-          </div> */}
-        </div>
-        <div className="text-center">
-          <h2 className="text-2xl font-semibold">{session?.user?.name}</h2>
-          <p className="text-card-foreground">{session?.user?.email}</p>
-        </div>
-        <div className="flex gap-4">
-          {/* <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-            Edit Profile
-          </button>
-          <button className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-            Settings
-          </button> */}
+          <SignOut variant="destructive" />
         </div>
       </div>
+      <UserForm
+        editMode={editMode}
+        user={{
+          name: user?.name ?? "",
+          image: user?.image ?? "",
+          email: user?.email ?? "",
+        }}
+      />
       {/* <Card>
         <CardHeader>
           <CardTitle>Edit Profile</CardTitle>
