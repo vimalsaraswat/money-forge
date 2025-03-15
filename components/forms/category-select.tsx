@@ -76,7 +76,7 @@ export default function CategorySelect({
         >
           <Command>
             <CommandInput placeholder={`Search ${type} categories...`} />
-            <CommandList className="max-h-[40vh] overflow-auto">
+            <CommandList className="max-h-52 md:max-h-[38vh] overflow-auto">
               <CommandEmpty>
                 {!type
                   ? "Select a transaction type first."
