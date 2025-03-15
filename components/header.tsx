@@ -11,7 +11,7 @@ export default async function Header() {
   const user = session?.user;
 
   return (
-    <header className="bg-background/60 backdrop-blur-sm sticky top-0 z-50 flex w-full items-center border-b">
+    <header className="bg-background/60 backdrop-blur-sm sticky top-0 z-40 flex w-full items-center border-b">
       <div className="flex h-(--header-height) w-full items-center gap-2 px-2 md:px-4">
         <HeaderHero />
         <nav className="md:space-x-4 flex ml-auto w-auto">

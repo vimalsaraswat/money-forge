@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import { BotIcon, UserIcon } from "./icons";
 import { ReactNode } from "react";
-import { StreamableValue, useStreamableValue } from "ai/rsc";
 import { Markdown } from "./markdown";
 
 export const TextStreamMessage = ({
@@ -17,7 +16,7 @@ export const TextStreamMessage = ({
   return (
     <div className="w-full flex items-center justify-end">
       <motion.div
-        className={`flex flex-row gap-2 w-max max-w-10/12 md:max-w-[500px] bg-card/50 p-2 rounded-md`}
+        className={`flex flex-row gap-2 w-fit max-w-10/12 md:max-w-[500px] bg-card/50 p-2 rounded-md`}
         initial={{ y: 40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
       >

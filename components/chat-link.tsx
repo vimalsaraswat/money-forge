@@ -11,9 +11,9 @@ const ChatLink = () => {
   if (pathName === "/chat") return null;
 
   return (
-    <motion.div className="fixed bottom-2 right-2 z-50 animate-bounce">
-      <Link href="/chat" className="">
-        <Sparkles />
+    <motion.div className="fixed bottom-3 right-4 z-50 animate-bounce">
+      <Link href="/chat" className="animate-pulse">
+        <Sparkles size={36} className="text-accent-foreground" />
       </Link>
     </motion.div>
   );

@@ -14,7 +14,12 @@ export function SignIn({ ...props }: React.ComponentProps<typeof Button>) {
         });
       }}
     >
-      <Button variant="ghost" {...props} type="submit">
+      <Button
+        variant="ghost"
+        {...props}
+        type="submit"
+        className="cursor-pointer"
+      >
         {props?.children ?? (
           <>
             <Image
@@ -42,7 +47,12 @@ export function SignOut({ ...props }: React.ComponentProps<typeof Button>) {
         });
       }}
     >
-      <Button variant="ghost" {...props} type="submit">
+      <Button
+        variant="ghost"
+        {...props}
+        type="submit"
+        className="cursor-pointer"
+      >
         {props?.children ?? "Logout"}
       </Button>
     </form>
