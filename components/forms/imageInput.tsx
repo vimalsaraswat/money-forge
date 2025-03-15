@@ -11,8 +11,6 @@ type ImageInputProps = React.ComponentProps<"input"> & {
   handleImageURLChange: (url: string) => void;
   wrapperClassName?: string;
   previewClassName?: string;
-  preview?: (imageUrl: string) => React.ReactNode;
-  children?: React.ReactNode;
 };
 
 export default function ImageInput({
@@ -21,7 +19,6 @@ export default function ImageInput({
   handleImageURLChange,
   wrapperClassName,
   previewClassName,
-  preview,
   children,
   ...props
 }: ImageInputProps) {
