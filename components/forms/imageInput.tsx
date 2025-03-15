@@ -19,7 +19,6 @@ export default function ImageInput({
   handleImageURLChange,
   wrapperClassName,
   previewClassName,
-  children,
   ...props
 }: ImageInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
