@@ -57,7 +57,7 @@ export default function Chat() {
                   <SparklesIcon />
                 </p>
                 <p className="text-center">
-                  Hi, I'm your personal finance chatbot!
+                  Hi, I&apos;m your personal finance chatbot!
                   <br /> I can answer questions about budgeting, saving,
                   investing, and more. What are your financial goals?
                 </p>
