@@ -3,6 +3,10 @@
 import { auth } from "@/auth";
 import { DB } from "@/db/queries";
 import { transporter } from "@/lib/mail";
+import { formatCurrency } from "@/lib/utils";
+import fs from "node:fs";
+import path from "node:path";
+import { getRoast } from "./ai/roast";
 
 export async function handleBudgetAlert() {
   try {
@@ -12,47 +16,61 @@ export async function handleBudgetAlert() {
     }
 
     const budgetData = await DB.getBudgets(session?.user?.id);
-
-    const warningMessages: string[] = [];
-    const criticalMessages: string[] = [];
-
-    for (const budget of budgetData) {
-      const spentPercentage = (budget.spent / budget.amount) * 100;
-
-      if (spentPercentage > 70 && spentPercentage < 90) {
-        warningMessages.push(`
-            <p>You have spent ${spentPercentage.toFixed(0)}% of your ${budget.category} budget.</p>
-            <p>Spent: $${budget.spent}</p>
-            <p>Budget: $${budget.amount}</p>
-          `);
-        console.log(`Warning threshold reached for ${budget.category}`);
-      } else if (spentPercentage >= 90) {
-        criticalMessages.push(`
-            <p>You have spent ${spentPercentage.toFixed(0)}% of your ${budget.category} budget.  Action may be needed!</p>
-            <p>Spent: $${budget.spent}</p>
-            <p>Budget: $${budget.amount}</p>
-          `);
-        console.log(`Critical threshold reached for ${budget.category}`);
-      }
+    const latestTransaction = (
+      await DB.getTransactions(session?.user?.id, 1, "updatedAt")
+    )?.[0];
+    const matchingBudget = budgetData.find(
+      (budget) => budget?.categoryId === latestTransaction?.categoryId,
+    );
+    if (!matchingBudget) {
+      return;
     }
 
-    const allMessages = [...warningMessages, ...criticalMessages];
-
-    if (allMessages.length > 0) {
-      const isCritical = criticalMessages.length > 0;
-      const alertType = isCritical ? "Critical Budget Alert" : "Budget Alert";
-
-      await sendEmail({
-        email: session?.user?.email,
-        subject: `${alertType} for ${session.user.name}`,
-        message: `
-            <h1>${alertType}</h1>
-            ${allMessages.join("<br>")}
-          `,
-      });
-
-      console.log(`${alertType} email sent for multiple budgets`);
+    const spentPercentage =
+      (matchingBudget.spent / matchingBudget.amount) * 100;
+    if (spentPercentage < 70) {
+      return;
     }
+
+    let alertType = "warning";
+    if (spentPercentage > 70 && spentPercentage < 90) {
+      alertType = "warning";
+    }
+
+    if (spentPercentage >= 90) {
+      alertType = "critical";
+    }
+
+    const roast = await getRoast({
+      category: matchingBudget.category!,
+      budget: formatCurrency(matchingBudget.amount),
+      spending: formatCurrency(matchingBudget.spent),
+      name: session.user.name,
+    });
+
+    const message = await getEmailTemplate("budget-alert", {
+      username: session.user.name,
+      categoryName: matchingBudget.category!,
+      budgetAmount: formatCurrency(matchingBudget.amount),
+      currentSpending: formatCurrency(matchingBudget.spent),
+      remainingAmount: formatCurrency(
+        matchingBudget.amount - matchingBudget.spent,
+      ),
+      spentPercentage: spentPercentage.toFixed(0),
+      roastMessage: roast?.success
+        ? ` <div class="roast-section">
+          <p>${roast.message}</p>
+      </div>`
+        : "",
+    });
+
+    await sendEmail({
+      email: session?.user?.email,
+      subject: `${alertType === "critical" ? "Critical" : ""} Budget Alert for ${session.user.name}`,
+      message,
+    });
+
+    console.log("Budget alert sent to:", session?.user?.email);
   } catch (error) {
     console.error("Error sending budget alert: ", error);
   }
@@ -86,3 +104,22 @@ export async function sendEmail({
     };
   }
 }
+
+export const getEmailTemplate = async (
+  templateName: string,
+  variables: Record<string, string | number>,
+) => {
+  const templatePath = path?.join(
+    process.cwd(),
+    "templates",
+    `${templateName}.html`,
+  );
+  let template = fs.readFileSync(templatePath, "utf-8");
+
+  for (const key in variables) {
+    const value = variables[key];
+    template = template.replace(new RegExp(`{{${key}}}`, "g"), String(value));
+  }
+
+  return template;
+};
