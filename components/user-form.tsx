@@ -41,6 +41,7 @@ export default function UserForm({ editMode, user }: UserFormProps) {
     const response = await updateUser(formData);
     if (!response?.success) {
       toast.error(response?.error ?? "Error updating user");
+      return;
     }
     toast.success(response?.message);
     router.push("/profile");
