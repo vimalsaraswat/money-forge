@@ -7,5 +7,9 @@ export const authConfig: NextAuthConfig = {
     authorized: async ({ auth }) => {
       return !!auth;
     },
+    session({ session, user }) {
+      session.user.credits = user.credits;
+      return session;
+    },
   },
 };
