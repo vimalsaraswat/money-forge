@@ -109,7 +109,7 @@ export const getEmailTemplate = async (
   templateName: string,
   variables: Record<string, string | number>,
 ) => {
-  const templatePath = path?.join(
+  const templatePath = path?.resolve(
     process.cwd(),
     "templates",
     `${templateName}.html`,
