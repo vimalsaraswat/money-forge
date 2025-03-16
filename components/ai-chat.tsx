@@ -7,13 +7,19 @@ import { useScrollToBottom } from "@/hooks/use-scroll-to-bottom";
 import { type AIProvider } from "@/providers/ai-provider";
 import { useActions, useUIState } from "ai/rsc";
 import { motion } from "framer-motion";
-import { SendIcon, SparklesIcon } from "lucide-react";
+import { Loader, SendIcon, SparklesIcon } from "lucide-react";
 import React, { useRef, useState } from "react";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
+import SubmitButton from "./forms/submit-button";
 
 export default function Chat() {
+  const { data: session } = useSession();
   const [conversation, setConversation] = useUIState<typeof AIProvider>();
   const { submitUserMessage } = useActions();
+  const [loading, setLoading] = useState(false);
+
+  console.log(session);
 
   const [input, setInput] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -21,30 +27,41 @@ export default function Chat() {
     useScrollToBottom<HTMLDivElement>();
 
   const handleSubmit = async () => {
-    if (!(input?.trim()?.length > 0)) {
-      toast.warning("Please enter a message");
-      return;
-    }
+    if (loading) return;
+    setLoading(true);
+    try {
+      if (!(input?.trim()?.length > 0)) {
+        toast.warning("Please enter a message");
+        return;
+      }
 
-    setInput("");
-    setConversation((currentConversation) => [
-      ...currentConversation,
-      <Message key={conversation.length} role="user" content={input} />,
-    ]);
-
-    const { success, message } = await submitUserMessage(input);
-    if (success) {
+      setInput("");
       setConversation((currentConversation) => [
         ...currentConversation,
-        message,
+        <Message
+          key={conversation.length}
+          role="user"
+          imgUrl={session?.user?.image}
+          content={input}
+        />,
       ]);
-    } else {
-      toast.error("Something went wrong, please try again later.");
+
+      const { success, message } = await submitUserMessage(input);
+      if (success) {
+        setConversation((currentConversation) => [
+          ...currentConversation,
+          message,
+        ]);
+      } else {
+        toast.error(message || "Something went wrong, please try again later.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col justify-center flex-1">
+    <div className="flex flex-col justify-center flex-1 max-w-3xl mx-auto">
       <div className="flex flex-col justify-between gap-2 flex-1 overflow-auto">
         <div
           ref={messagesContainerRef}
@@ -81,14 +98,13 @@ export default function Chat() {
             className="pr-10"
             autoFocus
           />
-          <Button
-            type="submit"
-            variant="outline"
+          <SubmitButton
             size="icon"
+            variant="outline"
+            children={<SendIcon />}
+            loading={<Loader className="animate-spin" />}
             className="absolute right-0 bottom-0 opacity-80 cursor-pointer"
-          >
-            <SendIcon />
-          </Button>
+          />
         </form>
       </div>
     </div>

@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BotIcon, UserIcon } from "./icons";
+import Image from "next/image";
 import { ReactNode } from "react";
+import { BotIcon, UserIcon } from "./icons";
 import { Markdown } from "./markdown";
 
 export const TextStreamMessage = ({
@@ -21,7 +22,13 @@ export const TextStreamMessage = ({
         animate={{ y: 0, opacity: 1 }}
       >
         <div className="size-[24px] flex flex-col justify-center items-center flex-shrink-0 text-zinc-400">
-          <BotIcon />
+          <Image
+            width={24}
+            height={24}
+            src="/logo.webp"
+            alt={`Bot avatar`}
+            className="rounded-full"
+          />
         </div>
 
         <div className="flex flex-col gap-1 w-full">
@@ -36,9 +43,11 @@ export const TextStreamMessage = ({
 
 export const Message = ({
   role,
+  imgUrl,
   content,
 }: {
   role: "assistant" | "user";
+  imgUrl?: string | null;
   content: string | ReactNode;
 }) => {
   return (
@@ -49,7 +58,19 @@ export const Message = ({
         animate={{ y: 0, opacity: 1 }}
       >
         <div className="size-[24px] flex flex-col justify-center items-center flex-shrink-0 text-zinc-400">
-          {role === "assistant" ? <BotIcon /> : <UserIcon />}
+          {imgUrl ? (
+            <Image
+              width={24}
+              height={24}
+              src={imgUrl}
+              alt={`${role} avatar`}
+              className="rounded-full"
+            />
+          ) : role === "assistant" ? (
+            <BotIcon />
+          ) : (
+            <UserIcon />
+          )}
         </div>
 
         <div className="flex flex-col gap-1 w-full">

@@ -15,6 +15,7 @@ export const users = createTable("user", {
   name: text("name"),
   email: text("email").unique(),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
+  credits: integer("credits").default(5),
   image: text("image"),
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
 });

@@ -9,7 +9,7 @@ export default async function Page() {
   }
 
   return (
-    <div className="flex flex-col p-2 md:p-4 pb-3 md:pb-5 h-full overflow-auto">
+    <div className="flex h-full p-2 md:p-4 pb-3 md:pb-5 self-stretch flex-1 overflow-hidden">
       <Chat />
     </div>
   );
