@@ -4,9 +4,8 @@ import { auth } from "@/auth";
 import { DB } from "@/db/queries";
 import { transporter } from "@/lib/mail";
 import { formatCurrency } from "@/lib/utils";
-import fs from "node:fs";
-import path from "node:path";
 import { getRoast } from "./ai/roast";
+import { budgetAlertHTML } from "@/templates/budget-alert";
 
 export async function handleBudgetAlert() {
   try {
@@ -109,12 +108,13 @@ export const getEmailTemplate = async (
   templateName: string,
   variables: Record<string, string | number>,
 ) => {
-  const templatePath = path?.join(
-    process.cwd(),
-    "templates",
-    `${templateName}.html`,
-  );
-  let template = fs.readFileSync(templatePath, "utf-8");
+  // const templatePath = path?.resolve(
+  //   process.cwd(),
+  //   "templates",
+  //   `${templateName}.html`,
+  // );
+  // let template = fs.readFileSync(templatePath, "utf-8");
+  let template = budgetAlertHTML;
 
   for (const key in variables) {
     const value = variables[key];
