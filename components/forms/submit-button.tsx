@@ -8,14 +8,14 @@ type SubmitButtonProps = React.ComponentProps<typeof Button> & {
   label?: string;
   loadingLabel?: string;
   loading?: React.ReactNode;
-  children?: React.ReactNode;
+  content?: React.ReactNode;
 };
 
 export default function SubmitButton({
   label,
   loadingLabel,
   loading,
-  children,
+  content,
   ...props
 }: SubmitButtonProps) {
   const { pending } = useFormStatus();
@@ -27,7 +27,7 @@ export default function SubmitButton({
       className={cn("cursor-pointer", props?.className)}
     >
       {pending ? loadingLabel : label}
-      {pending ? loading : children}
+      {pending ? loading : content}
     </Button>
   );
 }
