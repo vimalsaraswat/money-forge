@@ -11,7 +11,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     accountsTable: accounts,
     sessionsTable: sessions,
     verificationTokensTable: verificationTokens,
-  }),
+  }) as unknown as typeof DrizzleAdapter.prototype,
   session: {
     strategy: "database",
     // maxAge: 30 * 60,

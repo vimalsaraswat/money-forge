@@ -48,15 +48,7 @@ export default async function DashboardPage() {
             <CardTitle>Income vs Expenses</CardTitle>
           </CardHeader>
           <CardContent className="flex-1 grid place-items-center">
-            {transactionChartData?.length > 0 ? (
-              <IncomeExpenseGraph data={transactionChartData} />
-            ) : (
-              <div className="grid place-items-center py-40">
-                <p className="text-muted-foreground">
-                  No Income vs Expenses data available.
-                </p>
-              </div>
-            )}
+            <IncomeExpenseGraph data={transactionChartData} />
           </CardContent>
         </Card>
         <Card>
@@ -64,15 +56,7 @@ export default async function DashboardPage() {
             <CardTitle>Expense Breakdown</CardTitle>
           </CardHeader>
           <CardContent className="flex-1 grid place-items-center">
-            {expenseChartData?.length > 0 ? (
-              <ExpenseBreakdown data={expenseChartData} />
-            ) : (
-              <div className="grid place-items-center py-40">
-                <p className="text-muted-foreground">
-                  No Expense Breakdown data available.
-                </p>
-              </div>
-            )}
+            <ExpenseBreakdown data={expenseChartData} />
           </CardContent>
         </Card>
       </div>

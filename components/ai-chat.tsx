@@ -129,10 +129,11 @@ export default function Chat() {
           <SubmitButton
             size="icon"
             variant="outline"
-            content={<SendIcon />}
             loading={<Loader className="animate-spin" />}
             className="absolute right-0 bottom-0 opacity-80 cursor-pointer"
-          />
+          >
+            <SendIcon />
+          </SubmitButton>
         </form>
       </div>
     </div>
