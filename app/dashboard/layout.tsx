@@ -13,8 +13,9 @@ export default async function DashboardLayout({
 
   if (
     (allowedEmails?.length ?? -1) > 0 &&
-    session?.user &&
-    allowedEmails?.some((email) => email === session?.user?.email)
+    session?.user
+    // &&
+    // allowedEmails?.some((email) => email === session?.user?.email)
   )
     return <>{children}</>;
   const imageSrc = imageSrcs[Math.floor(Math.random() * imageSrcs.length)];
