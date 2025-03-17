@@ -225,7 +225,7 @@ export const budgetAlertHTML = `
                       </p>
                       <p class="footer-signature">
                           Yours truly, <br />
-                          <strong>Vimal Saraswat</strong>
+                          <strong>Team MoneyForge</strong>
                       </p>
                   </div>
               </footer>

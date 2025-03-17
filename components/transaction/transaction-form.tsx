@@ -220,7 +220,7 @@ export function DeleteTransaction({
   return (
     <Dialog open={dialogOpen} onOpenChange={(open) => setDialogOpen(open)}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="icon">
+        <Button variant="outline" size="icon" className="cursor-pointer">
           <Trash />
         </Button>
       </DialogTrigger>

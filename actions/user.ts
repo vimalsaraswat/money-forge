@@ -44,5 +44,3 @@ export async function updateUser(formData: FormData) {
     return { success: false, error: error?.message ?? "Error updating user" };
   }
 }
-
-// https://lh3.googleusercontent.com/a/ACg8ocKsAEWdeYw95TZWaL2P7q1l9vGOyQtiH7E0fdeHTS1_JRerTckj=s96-c

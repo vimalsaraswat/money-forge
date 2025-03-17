@@ -7,7 +7,7 @@ import Header from "@/components/header";
 import { Toaster } from "@/components/ui/sonner";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
-import ChatLink from "@/components/chat-link";
+// import ChatLink from "@/components/chat-link";
 import { AIProvider } from "@/providers/ai-provider";
 import { SessionProvider } from "next-auth/react";
 
@@ -48,7 +48,7 @@ export default function RootLayout({
                   </SidebarInset>
                 </div>
                 <Toaster />
-                <ChatLink />
+                {/* <ChatLink /> */}
               </SidebarProvider>
             </AIProvider>
           </SessionProvider>
