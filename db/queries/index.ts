@@ -41,7 +41,7 @@ export const DB = {
 
   getTransactions: async (
     userId: string,
-    limit: number = 50,
+    limit: number = 400,
     order: "date" | "updatedAt" = "date",
   ) => {
     return await db

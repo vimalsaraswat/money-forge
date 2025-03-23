@@ -1,38 +1,62 @@
-import { MonthlyChartDataType, TransactionType } from "@/types";
+import { BarChartDataType, TransactionType } from "@/types";
+import { formatDate } from "./utils";
 
-export const getTransactionChartData = (transactions: TransactionType[]) => {
-  if (!transactions) return [];
-
-  const monthlyData = transactions.reduce(
+const aggregateTransactionsByTimeUnit = (
+  transactions: TransactionType[],
+  getTimeUnit: (date: Date) => string,
+) => {
+  return transactions.reduce(
     (
       acc: {
-        [key: string]: MonthlyChartDataType;
+        [key: string]: BarChartDataType;
       },
       transaction,
     ) => {
-      const month = new Date(transaction.date).toLocaleString("default", {
-        month: "short",
-      });
+      const timeUnit = getTimeUnit(new Date(transaction.date));
       const type = transaction.type;
       const amount = transaction.amount;
 
-      if (!acc[month]) {
-        acc[month] = { name: month, income: 0, expenses: 0 };
+      if (!acc[timeUnit]) {
+        acc[timeUnit] = { name: timeUnit, income: 0, expenses: 0 };
       }
 
       if (type === "income") {
-        acc[month].income += amount;
+        acc[timeUnit].income += amount;
       } else {
-        acc[month].expenses += amount;
+        acc[timeUnit].expenses += amount;
       }
 
       return acc;
     },
     {},
   );
+};
 
-  const monthlyDataArray = Object.values(monthlyData);
-  return monthlyDataArray;
+export const getTransactionChartData = (transactions: TransactionType[]) => {
+  if (!transactions)
+    return { monthlyDataArray: [], weeklyDataArray: [], dailyDataArray: [] };
+
+  const dailyData = aggregateTransactionsByTimeUnit(transactions, (date) =>
+    formatDate(date, { year: undefined }),
+  );
+  const dailyDataArray = Object.entries(dailyData).map(([_, value]) => value);
+
+  const weeklyData = aggregateTransactionsByTimeUnit(transactions, (date) => {
+    const startOfWeek = new Date(date.setDate(date.getDate() - date.getDay()));
+    return formatDate(startOfWeek, { year: "2-digit" });
+  });
+  const weeklyDataArray = Object.entries(weeklyData).map(([_, value]) => value);
+
+  const monthlyData = aggregateTransactionsByTimeUnit(transactions, (date) =>
+    date.toLocaleString("default", {
+      month: "short",
+    }),
+  );
+  const monthlyDataArray = Object.entries(monthlyData).map(
+    ([_, value]) => value,
+  );
+
+  return { monthlyDataArray, weeklyDataArray, dailyDataArray };
 };
 
 export const getExpenseChartData = (transactions: TransactionType[]) => {

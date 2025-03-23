@@ -30,10 +30,11 @@ export function formatCurrency(amount: number) {
   }).format(amount);
 }
 
-export function formatDate(date: Date) {
+export function formatDate(date: Date, options?: Intl.DateTimeFormatOptions) {
   return new Intl.DateTimeFormat("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
+    ...options,
   }).format(date);
 }

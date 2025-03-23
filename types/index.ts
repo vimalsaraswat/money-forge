@@ -17,7 +17,7 @@ export enum CategoryEnum {
   OTHER = "other",
 }
 
-export type MonthlyChartDataType = {
+export type BarChartDataType = {
   name: string;
   income: number;
   expenses: number;

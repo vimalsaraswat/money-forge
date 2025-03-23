@@ -1,23 +1,31 @@
 import { auth } from "@/auth";
-import { ExpenseBreakdown, IncomeExpenseGraph } from "@/components/chart";
+import {
+  TransactionBarChart,
+  ExpensePieChart,
+  // BudgetRadialChart,
+} from "@/components/dashboard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DB } from "@/db/queries";
-import { getExpenseChartData, getTransactionChartData } from "@/lib/helpers";
+import { getExpenseChartData } from "@/lib/helpers";
 import { cn, formatCurrency } from "@/lib/utils";
 import { TransactionType } from "@/types";
 import { notFound } from "next/navigation";
 
 export default async function DashboardPage() {
   const session = await auth();
-  if (!session?.user?.id) {
+  const userId = session?.user?.id;
+  if (!userId) {
     notFound();
   }
 
-  const transactions = (await DB.getTransactions(
-    session?.user?.id,
-  )) as TransactionType[];
+  const transactionsPromise = DB.getTransactions(userId);
+  const budgetsPromise = DB.getBudgets(userId);
 
-  const transactionChartData = getTransactionChartData(transactions);
+  const [transactions] = await Promise.all([
+    transactionsPromise as Promise<TransactionType[]>,
+    // budgetsPromise as Promise<BudgetListType>,
+  ]);
+
   const expenseChartData = getExpenseChartData(transactions);
 
   const totalIncome = transactions?.reduce((acc, transaction) => {
@@ -37,35 +45,60 @@ export default async function DashboardPage() {
   return (
     <div className="flex flex-col gap-4 h-full overflow-auto">
       <h1 className="text-2xl font-bold">Dashboard</h1>
-      <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+      <div className="grid auto-rows-min gap-2 sm:gap-4 grid-cols-2 sm:grid-cols-3">
         <StatCard title="Total Income" amount={totalIncome} />
         <StatCard title="Total Expenses" amount={totalExpenses} />
-        <StatCard title="Remaining Balance" amount={remainingBalance} />
+        <StatCard
+          title="Remaining Balance"
+          amount={remainingBalance}
+          className="col-span-full sm:col-span-1"
+        />
       </div>
       <div className="min-h-min flex-1 rounded-xl grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="col-span-full lg:col-span-1">
+          <TransactionBarChart data={transactions} />
+        </div>
+        <ExpensePieChart data={expenseChartData} />
+        {/* <BudgetRadialChart data={budgets} />
         <Card>
           <CardHeader>
-            <CardTitle>Income vs Expenses</CardTitle>
+            <CardTitle>Budget Overview</CardTitle>
           </CardHeader>
-          <CardContent className="flex-1 grid place-items-center">
-            <IncomeExpenseGraph data={transactionChartData} />
+          <CardContent className="flex flex-col">
+            {budgets?.length > 0 ? (
+              <ul className="list-none p-0">
+                {budgets.map((budget) => (
+                  <li key={budget?.id} className="mb-2">
+                    <div className="font-semibold">{budget?.category}</div>
+                    <div className="text-sm text-muted-foreground">
+                      Spent: {formatCurrency(budget?.spent)} of{" "}
+                      {formatCurrency(budget?.amount)}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                No budgets created yet.
+              </p>
+            )}
           </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Expense Breakdown</CardTitle>
-          </CardHeader>
-          <CardContent className="flex-1 grid place-items-center">
-            <ExpenseBreakdown data={expenseChartData} />
-          </CardContent>
-        </Card>
+        </Card> */}
       </div>
     </div>
   );
 }
 
-const StatCard = ({ title, amount }: { title: string; amount: number }) => (
-  <Card className="rounded-xl">
+const StatCard = ({
+  title,
+  amount,
+  className,
+}: {
+  title: string;
+  amount: number;
+  className?: string;
+}) => (
+  <Card className={cn("rounded-xl", className)}>
     <CardHeader>
       <CardTitle>{title}</CardTitle>
     </CardHeader>
