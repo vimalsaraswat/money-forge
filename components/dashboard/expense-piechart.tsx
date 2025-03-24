@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
@@ -9,20 +10,49 @@ import { capitalize, formatCurrency, generateRandomColor } from "@/lib/utils";
 import { useMemo } from "react";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
 import EmptyStateCard from "../EmptyDataCard";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
 
 type ExpenseChartProps = {
   data: {
     name: string;
     value: number;
   }[];
+  className?: string;
 };
 
-export default function ExpensePieChart({ data }: ExpenseChartProps) {
+const chartConfig = {
+  1: {
+    color: "hsl(var(--chart-1))",
+  },
+  2: {
+    color: "hsl(var(--chart-3))",
+  },
+  3: {
+    color: "hsl(var(--chart-2))",
+  },
+  4: {
+    color: "hsl(var(--chart-4))",
+  },
+  5: {
+    color: "hsl(var(--chart-5))",
+  },
+} satisfies ChartConfig;
+
+export default function ExpensePieChart({
+  data,
+  className,
+}: ExpenseChartProps) {
   return (
-    <Card>
+    <Card className={className}>
       <CardHeader>
         <CardTitle>Expense Breakdown</CardTitle>
+        <CardDescription>Breakdown of your top expenses</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 grid place-items-center">
         <ExpenseChart data={data} />
@@ -42,13 +72,9 @@ function ExpenseChart({ data }: ExpenseChartProps) {
       />
     );
 
-  const colors = useMemo(() => {
-    return data?.map(() => generateRandomColor());
-  }, [data]);
-
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <ChartContainer config={{}} className="min-h-[300px] w-full">
+      <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
         <PieChart>
           <Pie
             data={data}
@@ -59,11 +85,11 @@ function ExpenseChart({ data }: ExpenseChartProps) {
             dataKey="value"
           >
             {data?.map((_, index) => (
-              <Cell key={`cell-${index}`} fill={colors[index]} />
+              <Cell key={`cell-${index}`} fill={`var(--color-${index + 1})`} />
             ))}
           </Pie>
           <ChartTooltip
-            content={<ChartTooltipContent wrapperClassName="bg-red-500" />}
+            content={<ChartTooltipContent />}
             formatter={(value, name) => [
               formatCurrency(+value) + "  ",
               capitalize(name as string),

@@ -42,8 +42,10 @@ const chartConfig = {
 
 export default function TransactionBarChart({
   data,
+  className,
 }: {
   data: TransactionType[];
+  className?: string;
 }) {
   const { monthlyDataArray, weeklyDataArray, dailyDataArray } = useMemo(() => {
     return getTransactionChartData(data);
@@ -67,9 +69,9 @@ export default function TransactionBarChart({
   })();
 
   return (
-    <Card>
+    <Card className={className}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle>Income vs Expenses</CardTitle>
+        <CardTitle>Income and Expenses</CardTitle>
         <Select
           value={timeRange}
           onValueChange={(value) =>
@@ -106,7 +108,7 @@ export function IncomeExpenseGraph({ data }: { data: BarChartDataType[] }) {
 
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
+      <ChartContainer config={chartConfig} className="h-[28vh] max-h-80 w-full">
         <BarChart
           accessibilityLayer
           data={data}
