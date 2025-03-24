@@ -5,10 +5,10 @@ const aggregateTransactionsByTimeUnit = (
   transactions: TransactionType[],
   getTimeUnit: (date: Date) => string,
 ) => {
-  return transactions.reduce(
+  const data = transactions.reduce(
     (
       acc: {
-        [key: string]: BarChartDataType;
+        [key: string]: BarChartDataType & { startTime: Date; endTime: Date };
       },
       transaction,
     ) => {
@@ -17,7 +17,13 @@ const aggregateTransactionsByTimeUnit = (
       const amount = transaction.amount;
 
       if (!acc[timeUnit]) {
-        acc[timeUnit] = { name: timeUnit, income: 0, expenses: 0 };
+        acc[timeUnit] = {
+          name: timeUnit,
+          income: 0,
+          expenses: 0,
+          startTime: new Date(transaction.date),
+          endTime: new Date(transaction.date),
+        };
       }
 
       if (type === "income") {
@@ -26,10 +32,32 @@ const aggregateTransactionsByTimeUnit = (
         acc[timeUnit].expenses += amount;
       }
 
+      if (
+        acc[timeUnit].startTime.getTime() > new Date(transaction.date).getTime()
+      ) {
+        acc[timeUnit].startTime = new Date(transaction.date);
+      }
+
+      if (
+        acc[timeUnit].endTime.getTime() < new Date(transaction.date).getTime()
+      ) {
+        acc[timeUnit].endTime = new Date(transaction.date);
+      }
+
       return acc;
     },
     {},
   );
+
+  const sortedDataArray = Object.entries(data).sort((a, b) => {
+    return a[1].startTime.getTime() - b[1].startTime.getTime();
+  });
+
+  const lastThirtyDataArray = sortedDataArray?.slice(-20);
+  const sortedData: { [key: string]: BarChartDataType } =
+    Object.fromEntries(lastThirtyDataArray);
+
+  return sortedData;
 };
 
 export const getTransactionChartData = (transactions: TransactionType[]) => {
@@ -62,7 +90,7 @@ export const getTransactionChartData = (transactions: TransactionType[]) => {
 export const getExpenseChartData = (transactions: TransactionType[]) => {
   if (!transactions) return [];
 
-  const expenseBreakdownData = transactions?.reduce(
+  const expenseBreakdownData = transactions.reduce(
     (acc: { [key: string]: number }, transaction) => {
       if (transaction.type === "expense") {
         if (acc[transaction.category]) {
@@ -76,12 +104,16 @@ export const getExpenseChartData = (transactions: TransactionType[]) => {
     {},
   );
 
-  const expenseDataArray = Object.entries(expenseBreakdownData || {}).map(
-    ([name, value]) => ({
-      name,
-      value,
-    }),
-  );
+  const sortedExpenseBreakdownData = Object.entries(
+    expenseBreakdownData || {},
+  ).sort(([, aValue], [, bValue]) => bValue - aValue);
+
+  const topFourExpenseBreakdownData = sortedExpenseBreakdownData.slice(0, 5);
+
+  const expenseDataArray = topFourExpenseBreakdownData.map(([name, value]) => ({
+    name,
+    value,
+  }));
 
   return expenseDataArray;
 };
