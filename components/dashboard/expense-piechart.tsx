@@ -6,8 +6,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { capitalize, formatCurrency, generateRandomColor } from "@/lib/utils";
-import { useMemo } from "react";
+import { capitalize, formatCurrency } from "@/lib/utils";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
 import EmptyStateCard from "../EmptyDataCard";
 import {
@@ -81,8 +80,9 @@ function ExpenseChart({ data }: ExpenseChartProps) {
             cx="50%"
             cy="50%"
             labelLine={false}
-            outerRadius={80}
             dataKey="value"
+            cornerRadius={10}
+            label={({ value }) => formatCurrency(value)}
           >
             {data?.map((_, index) => (
               <Cell key={`cell-${index}`} fill={`var(--color-${index + 1})`} />
