@@ -1,14 +1,19 @@
 import { auth } from "@/auth";
 import {
-  TransactionBarChart,
-  ExpensePieChart,
+  BudgetStackedChart,
   // BudgetRadialChart,
+  CategoryAreaChart,
+  ExpensePieChart,
+  TransactionBarChart,
 } from "@/components/dashboard";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DB } from "@/db/queries";
 import { getExpenseChartData } from "@/lib/helpers";
 import { cn, formatCurrency } from "@/lib/utils";
-import { TransactionType } from "@/types";
+import { BudgetListType, TransactionType } from "@/types";
+import { PlusIcon, WalletMinimalIcon } from "lucide-react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 export default async function DashboardPage() {
@@ -21,9 +26,9 @@ export default async function DashboardPage() {
   const transactionsPromise = DB.getTransactions(userId);
   const budgetsPromise = DB.getBudgets(userId);
 
-  const [transactions] = await Promise.all([
+  const [transactions, budgets] = await Promise.all([
     transactionsPromise as Promise<TransactionType[]>,
-    // budgetsPromise as Promise<BudgetListType>,
+    budgetsPromise as Promise<BudgetListType>,
   ]);
 
   const expenseChartData = getExpenseChartData(transactions);
@@ -40,11 +45,29 @@ export default async function DashboardPage() {
     }
     return acc;
   }, 0);
+
   const remainingBalance = totalIncome - totalExpenses;
 
   return (
-    <div className="flex flex-col gap-4 h-full overflow-auto">
-      <h1 className="text-2xl font-bold">Dashboard</h1>
+    <div className="flex flex-col gap-4 h-full">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Dashboard</h1>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/dashboard/transactions">
+              <PlusIcon className="h-4 w-4" />
+              <span className="sr-only sm:not-sr-only"> Transaction</span>
+            </Link>
+          </Button>
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/dashboard/budgets">
+              <WalletMinimalIcon className="mr-1 h-4 w-4" />
+              {budgets?.length || 0}
+              <span className="sr-only sm:not-sr-only">Budgets</span>
+            </Link>
+          </Button>
+        </div>
+      </div>
       <div className="grid auto-rows-min gap-2 sm:gap-4 grid-cols-2 sm:grid-cols-3">
         <StatCard title="Total Income" amount={totalIncome} />
         <StatCard title="Total Expenses" amount={totalExpenses} />
@@ -54,11 +77,11 @@ export default async function DashboardPage() {
           className="col-span-full sm:col-span-1"
         />
       </div>
-      <div className="min-h-min flex-1 rounded-xl grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="col-span-full lg:col-span-1">
-          <TransactionBarChart data={transactions} />
-        </div>
+      <div className="min-h-min flex-1 rounded-xl grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <TransactionBarChart data={transactions} className="col-span-full" />
         <ExpensePieChart data={expenseChartData} />
+        <BudgetStackedChart data={budgets} />
+        <CategoryAreaChart data={transactions} className="col-span-full" />
         {/* <BudgetRadialChart data={budgets} />
         <Card>
           <CardHeader>
@@ -98,14 +121,19 @@ const StatCard = ({
   amount: number;
   className?: string;
 }) => (
-  <Card className={cn("rounded-xl", className)}>
+  <Card
+    className={cn(
+      "rounded-xl lg:gap-0 lg:flex-row lg:items-end lg:justify-evenly",
+      className,
+    )}
+  >
     <CardHeader>
-      <CardTitle>{title}</CardTitle>
+      <CardTitle className="text-muted-foreground">{title}</CardTitle>
     </CardHeader>
     <CardContent>
       <p
         className={cn(
-          "text-2xl font-semibold",
+          "text-2xl font-semibold text-nowrap",
           amount < 0 && "text-destructive",
         )}
       >
