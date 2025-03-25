@@ -23,7 +23,14 @@ import {
 import { formatDate } from "@/lib/utils";
 import { TransactionType } from "@/types";
 import { useEffect, useMemo, useState } from "react";
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 const chartConfig = {
   1: { color: "hsl(var(--chart-1))" },
@@ -163,57 +170,61 @@ export default function CategoryAreaChart({
       <CardContent className="grid gap-4">
         {filteredChartComparisonData.length > 0 &&
         compareBetween.filter(Boolean).length > 0 ? (
-          <ChartContainer config={chartConfig}>
-            <AreaChart
-              data={filteredChartComparisonData}
-              margin={{
-                top: 10,
-                right: 30,
-                left: 0,
-                bottom: 0,
-              }}
+          <ResponsiveContainer width="100%" height="100%">
+            <ChartContainer
+              config={chartConfig}
+              className="h-[28vh] max-h-80 w-full"
             >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis
-                dataKey="date"
-                tickFormatter={(value) => {
-                  const date = new Date(value);
-                  return date.toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                  });
+              <AreaChart
+                data={filteredChartComparisonData}
+                margin={{
+                  top: 10,
+                  right: 30,
+                  left: 0,
+                  bottom: 0,
                 }}
-              />
-              <YAxis tickFormatter={(value) => `$${value}`} />
-              <ChartTooltip
-                content={<ChartTooltipContent />}
-                labelFormatter={(value) => {
-                  return new Date(value).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                  });
-                }}
-              />
-              <Area
-                key={compareBetween[0]}
-                type="monotone"
-                dataKey={compareBetween[0]}
-                stackId="1"
-                stroke={`var(--color-primary-3)`}
-                fill={`var(--color-2)`}
-                fillOpacity={0.6}
-              />
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="date"
+                  tickFormatter={(value) => {
+                    const date = new Date(value);
+                    return date.toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    });
+                  }}
+                />
+                <YAxis tickFormatter={(value) => `$${value}`} />
+                <ChartTooltip
+                  content={<ChartTooltipContent />}
+                  labelFormatter={(value) => {
+                    return new Date(value).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    });
+                  }}
+                />
+                <Area
+                  key={compareBetween[0]}
+                  type="monotone"
+                  dataKey={compareBetween[0]}
+                  stackId="1"
+                  stroke={`var(--color-primary-3)`}
+                  fill={`var(--color-2)`}
+                  fillOpacity={0.6}
+                />
 
-              <Area
-                key={compareBetween[1]}
-                type="monotone"
-                dataKey={compareBetween[1]}
-                stackId="1"
-                stroke={`var(--color-primary-2)`}
-                fill={`var(--color-1)`}
-                fillOpacity={0.6}
-              />
-              {/* {compareBetween.filter(Boolean).map((category, index) => (
+                <Area
+                  key={compareBetween[1]}
+                  type="monotone"
+                  dataKey={compareBetween[1]}
+                  stackId="1"
+                  stroke={`var(--color-primary-2)`}
+                  fill={`var(--color-1)`}
+                  fillOpacity={0.6}
+                />
+                {/* {compareBetween.filter(Boolean).map((category, index) => (
                 <Area
                   key={category}
                   type="monotone"
@@ -224,9 +235,10 @@ export default function CategoryAreaChart({
                   fillOpacity={0.6}
                 />
               ))} */}
-              {/* <Legend /> */}
-            </AreaChart>
-          </ChartContainer>
+                {/* <Legend /> */}
+              </AreaChart>
+            </ChartContainer>
+          </ResponsiveContainer>
         ) : (
           <div className="text-center py-4">
             {compareBetween.filter(Boolean).length === 0
