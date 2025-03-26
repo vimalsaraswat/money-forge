@@ -1,58 +1,15 @@
 "use client";
 
+import { generateRandomColor } from "@/lib/utils";
+import { BudgetListType } from "@/types";
+import { useMemo } from "react";
 import {
-  RadialBarChart,
-  RadialBar,
   Legend,
+  RadialBar,
+  RadialBarChart,
   ResponsiveContainer,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { BudgetListType } from "@/types";
-
-const data = [
-  {
-    name: "18-24",
-    uv: 31.47,
-    pv: 2400,
-    fill: "#8884d8",
-  },
-  {
-    name: "25-29",
-    uv: 26.69,
-    pv: 4567,
-    fill: "#83a6ed",
-  },
-  {
-    name: "30-34",
-    uv: 15.69,
-    pv: 1398,
-    fill: "#8dd1e1",
-  },
-  {
-    name: "35-39",
-    uv: 8.22,
-    pv: 9800,
-    fill: "#82ca9d",
-  },
-  {
-    name: "40-49",
-    uv: 8.63,
-    pv: 3908,
-    fill: "#a4de6c",
-  },
-  {
-    name: "50+",
-    uv: 2.63,
-    pv: 4800,
-    fill: "#d0ed57",
-  },
-  {
-    name: "unknow",
-    uv: 6.67,
-    pv: 4800,
-    fill: "#ffc658",
-  },
-];
 
 const style = {
   top: "50%",
@@ -62,19 +19,35 @@ const style = {
 };
 
 export default function BudgetRadialChart({ data }: { data: BudgetListType }) {
+  const chartData = useMemo(() => {
+    return data?.map((item) => {
+      const color = generateRandomColor();
+      const percentage = ((item.spent / item.amount) * 100).toFixed(2);
+      return {
+        name: item.category!,
+        value: percentage,
+        fill: color,
+      };
+    });
+  }, [data]);
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Expense Breakdown</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 grid place-items-center">
-        <BudgetChart data={data} />
+        <BudgetChart data={chartData} />
       </CardContent>
     </Card>
   );
 }
 
-function BudgetChart({ data }: { data: BudgetListType }) {
+function BudgetChart({
+  data,
+}: {
+  data: { name: string; value: string; fill: string }[];
+}) {
   return (
     <ResponsiveContainer width="100%" height="100%">
       <RadialBarChart
@@ -86,11 +59,10 @@ function BudgetChart({ data }: { data: BudgetListType }) {
         data={data}
       >
         <RadialBar
-          // minAngle={15}
           label={{ position: "insideStart", fill: "#fff" }}
+          dataKey="value"
+          enableBackground="#fff"
           background
-          // clockWise
-          dataKey="category"
         />
         <Legend
           iconSize={10}
