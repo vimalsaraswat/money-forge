@@ -67,13 +67,13 @@ export const getTransactionChartData = (transactions: TransactionType[]) => {
   const dailyData = aggregateTransactionsByTimeUnit(transactions, (date) =>
     formatDate(date, { year: undefined }),
   );
-  const dailyDataArray = Object.entries(dailyData).map(([_, value]) => value);
+  const dailyDataArray = Object.entries(dailyData).map(([, value]) => value);
 
   const weeklyData = aggregateTransactionsByTimeUnit(transactions, (date) => {
     const startOfWeek = new Date(date.setDate(date.getDate() - date.getDay()));
     return formatDate(startOfWeek, { year: "2-digit" });
   });
-  const weeklyDataArray = Object.entries(weeklyData).map(([_, value]) => value);
+  const weeklyDataArray = Object.entries(weeklyData).map(([, value]) => value);
 
   const monthlyData = aggregateTransactionsByTimeUnit(transactions, (date) =>
     date.toLocaleString("default", {
@@ -81,7 +81,7 @@ export const getTransactionChartData = (transactions: TransactionType[]) => {
     }),
   );
   const monthlyDataArray = Object.entries(monthlyData).map(
-    ([_, value]) => value,
+    ([, value]) => value,
   );
 
   return { monthlyDataArray, weeklyDataArray, dailyDataArray };
