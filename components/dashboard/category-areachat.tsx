@@ -112,7 +112,9 @@ export default function CategoryAreaChart({
 
   const filteredChartComparisonData = useMemo(() => {
     return chartComparisonData.filter((item) => {
-      return compareBetween.some((category) => !!item[category]);
+      return compareBetween.some((category) =>
+        Object.keys(item).some((key) => key === category),
+      );
     });
   }, [chartComparisonData, compareBetween]);
 
