@@ -14,6 +14,7 @@ export const users = createTable("user", {
     .$defaultFn(() => crypto.randomUUID()),
   name: text("name"),
   email: text("email").unique(),
+  password: text("password"),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   credits: integer("credits").default(5),
   image: text("image"),

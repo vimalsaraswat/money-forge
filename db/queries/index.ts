@@ -3,19 +3,10 @@ import { budgets, categories, transactions } from "@/db/tables/finance";
 import { TransactionType } from "@/types";
 import { and, desc, eq, isNull, or, sql } from "drizzle-orm";
 import { users } from "../schema";
+import { userQueries } from "./user";
 
 export const DB = {
-  // ==================== Users ====================
-  getUser: async (userId: string) => {
-    return await db.select().from(users).where(eq(users.id, userId));
-  },
-
-  updateUser: async (
-    userId: string,
-    user: Partial<typeof users.$inferInsert>,
-  ) => {
-    return await db.update(users).set(user).where(eq(users.id, userId));
-  },
+  ...userQueries,
 
   // ==================== Transactions ====================
   createTransaction: async (transaction: typeof transactions.$inferInsert) => {
