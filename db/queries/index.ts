@@ -49,6 +49,7 @@ export const DB = {
         id: transactions.id,
         amount: transactions.amount,
         category: categories.name,
+        image: categories.image,
         categoryId: transactions.categoryId,
         type: categories.type,
         date: transactions.date,
@@ -166,6 +167,7 @@ export const DB = {
         id: budgets.id,
         category: categories.name,
         categoryId: budgets.categoryId,
+        image: categories.image,
         period: budgets.period,
         spent: sql<number>`COALESCE(SUM(CASE WHEN ${transactions.deletedAt} IS NULL AND ${transactions.date} >= ${budgets.startDate} AND ${transactions.date} <= ${budgets.endDate} THEN ${transactions.amount} ELSE 0 END), 0)`,
         amount: budgets.amount,
@@ -182,7 +184,13 @@ export const DB = {
         ),
       )
       .where(and(eq(budgets.userId, userId), isNull(budgets.deletedAt)))
-      .groupBy(budgets.id, categories.name, budgets.amount)
+      .groupBy(
+        budgets.id,
+        categories.name,
+        budgets.amount,
+        categories.image,
+        categories.id,
+      )
       .orderBy(desc(budgets.updatedAt));
   },
 

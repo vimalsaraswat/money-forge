@@ -27,6 +27,7 @@ export type TransactionType = {
   id: string;
   amount: number;
   category: string;
+  image?: string;
   categoryId: string;
   type: TransactionEnum;
   date: Date;
@@ -59,6 +60,7 @@ export type BudgetType = {
 export type BudgetListType = {
   id: string;
   category: string | null;
+  image?: string;
   period: PeriodEnum;
   spent: number;
   amount: number;

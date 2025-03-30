@@ -21,6 +21,7 @@ export const categories = createTable("categories", {
     .notNull()
     .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
   name: text("name").notNull(),
+  image: text("image"),
   description: text("description"),
   type: transactionTypeEnum("type").notNull(),
   isPublic: boolean("isPublic").default(false).notNull(),

@@ -1,5 +1,11 @@
 import { db } from "@/db/drizzle";
-import { accounts, sessions, users, verificationTokens } from "@/db/schema";
+import {
+  accounts,
+  authenticators,
+  sessions,
+  users,
+  verificationTokens,
+} from "@/db/schema";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import NextAuth from "next-auth";
 import { authConfig } from "./config";
@@ -11,6 +17,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     accountsTable: accounts,
     sessionsTable: sessions,
     verificationTokensTable: verificationTokens,
+    authenticatorsTable: authenticators,
   }) as unknown as typeof DrizzleAdapter.prototype,
   session: {
     strategy: "database",

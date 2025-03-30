@@ -14,6 +14,7 @@ import Link from "next/link";
 import { formatCurrency } from "@/lib/utils";
 import { DeleteBudget } from "./budget-form";
 import { BudgetListType } from "@/types";
+import Image from "next/image";
 
 const calculateProgress = (spent: number, amount: number) => {
   return (spent / amount) * 100;
@@ -60,7 +61,18 @@ export default function BudgetManagement({
               <Card key={budget.id}>
                 <CardHeader>
                   <CardTitle className="flex justify-between">
-                    {budget.category}
+                    <div className="flex items-center">
+                      {budget?.image && (
+                        <Image
+                          src={budget?.image}
+                          alt={budget?.category || ""}
+                          width={48}
+                          height={48}
+                          className="rounded-md mr-2"
+                        />
+                      )}
+                      <span className="text-xl">{budget?.category}</span>
+                    </div>
                     <div className="flex items-center gap-2">
                       <Button variant="outline" size="icon" asChild>
                         <Link href={`/dashboard/budgets/${budget?.id}/edit`}>

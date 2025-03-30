@@ -1,6 +1,7 @@
+import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { AlertCircle, Link, Plus } from "lucide-react";
-import { Button } from "./ui/button";
+import { AlertCircle, Plus } from "lucide-react";
+import Link from "next/link";
 
 const EmptyStateCard = ({
   heading,

@@ -12,6 +12,7 @@ import { DeleteTransaction } from "./transaction-form";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { ArrowDown, ArrowUp, Pencil } from "lucide-react";
+import { Card, CardContent, CardHeader } from "../ui/card";
 
 export default function TransactionList({
   transactions,
@@ -20,27 +21,33 @@ export default function TransactionList({
 }) {
   return (
     <>
-      <div className="md:hidden">
+      <div className="md:hidden space-y-2">
         {transactions?.length > 0 ? (
           transactions?.map((transaction) => (
-            <div
-              key={transaction.id}
-              className="border rounded-md p-4 mb-4 shadow-sm flex flex-col gap-2"
-            >
-              <div className="flex justify-between flex-wrap-reverse">
-                <div>
-                  <div className="capitalize text-md font-semibold">
-                    {transaction?.category}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {formatDate(transaction?.date)}
+            <Card key={transaction.id} className="p-3">
+              <CardHeader className="px-0 flex-row justify-between flex-wrap-reverse">
+                <div className="flex items-center">
+                  {transaction?.image && (
+                    <img
+                      src={transaction?.image}
+                      alt={transaction?.category}
+                      className="w-10 h-10 rounded-md mr-2"
+                    />
+                  )}
+                  <div>
+                    <div className="capitalize text-md font-semibold">
+                      {transaction?.category}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {formatDate(transaction?.date)}
+                    </div>
                   </div>
                 </div>
-                <div className="text-lg font-bold">
+                <span className="text-lg font-bold">
                   {formatCurrency(transaction?.amount)}
-                </div>
-              </div>
-              <div className="flex justify-between flex-wrap">
+                </span>
+              </CardHeader>
+              <CardContent className="px-0 flex justify-between flex-wrap">
                 <div>
                   <div
                     className={cn(
@@ -66,8 +73,8 @@ export default function TransactionList({
                   </Button>
                   <DeleteTransaction transactionId={transaction?.id} />
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           ))
         ) : (
           <div className="text-center text-muted-foreground py-10">
