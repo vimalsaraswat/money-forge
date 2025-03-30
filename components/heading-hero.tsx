@@ -5,12 +5,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { noSidebar } from "@/lib/utils";
 
 export const HeaderHero = () => {
   const pathname = usePathname();
+  const showSidebar = !noSidebar(pathname);
+
   return (
     <>
-      {pathname !== "/" && (
+      {showSidebar && (
         <>
           <SidebarTrigger className="cursor-pointer" />
           <Separator orientation="vertical" className="mr-2 h-4" />

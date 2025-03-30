@@ -1,3 +1,4 @@
+import { NoSidebarRoutes } from "@/config/data";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -31,10 +32,25 @@ export function formatCurrency(amount: number) {
 }
 
 export function formatDate(date: Date, options?: Intl.DateTimeFormatOptions) {
-  return new Intl.DateTimeFormat("en-US", {
+  const dateObj = new Date(date);
+  const formatter = new Intl.DateTimeFormat("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
     ...options,
-  }).format(date);
+  });
+
+  return formatter.format(dateObj);
+}
+
+export function noSidebar(pathname: string) {
+  return (
+    NoSidebarRoutes?.some((route) => {
+      if (route?.endsWith("*")) {
+        const baseRoute = route?.slice(0, -1);
+        return pathname?.startsWith(baseRoute);
+      }
+      return pathname === route;
+    }) ?? false
+  );
 }

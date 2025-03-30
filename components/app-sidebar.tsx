@@ -18,6 +18,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { HeaderHero } from "./heading-hero";
+import { noSidebar } from "@/lib/utils";
 
 const items = [
   {
@@ -46,7 +47,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { isMobile, setOpenMobile } = useSidebar();
   const pathname = usePathname();
 
-  if (pathname === "/") return;
+  if (noSidebar(pathname)) return;
 
   return (
     <Sidebar {...props}>

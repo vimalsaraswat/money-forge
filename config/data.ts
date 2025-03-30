@@ -1,0 +1,1 @@
+export const NoSidebarRoutes = ["/", "/signup*"];
