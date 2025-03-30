@@ -2,10 +2,10 @@
 
 import { auth } from "@/auth";
 import { DB } from "@/db/queries";
-import { transporter } from "@/lib/mail";
 import { formatCurrency } from "@/lib/utils";
 import { getRoast } from "./ai/roast";
 import { budgetAlertHTML } from "@/templates/budget-alert";
+import { sendEmail } from "./mail";
 
 export async function handleBudgetAlert() {
   try {
@@ -72,35 +72,6 @@ export async function handleBudgetAlert() {
     console.log("Budget alert sent to:", session?.user?.email);
   } catch (error) {
     console.error("Error sending budget alert: ", error);
-  }
-}
-
-export async function sendEmail({
-  email,
-  subject,
-  message,
-}: {
-  email: string;
-  subject: string;
-  message: string;
-}) {
-  try {
-    // Send email
-    await transporter().sendMail({
-      from: process.env.SMTP_FROM_EMAIL,
-      to: email,
-      subject,
-      html: message,
-      text: message,
-    });
-
-    return { success: true, message: "Email sent successfully!" };
-  } catch (error) {
-    console.error("Email send error:", error);
-    return {
-      success: false,
-      message: "Failed to send email. Please try again.",
-    };
   }
 }
 
