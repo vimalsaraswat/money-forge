@@ -59,7 +59,15 @@ export default function Chat() {
   };
 
   return (
-    <div className="flex flex-col justify-center flex-1 max-w-3xl mx-auto">
+    <div className="relative flex flex-col justify-center flex-1 max-w-3xl mx-auto">
+      <div className="absolute h-full w-full bg-[#1f1f1f01] backdrop-blur-[2px] z-50 grid place-items-center">
+        <div className="flex items-center gap-2">
+          <div className="p-[2px] border-2 border-teal-800 rounded-full">
+            <div className="bg-teal-700 rounded-full size-3" />
+          </div>
+          <p className="text-2xl font-bold animate-pulse">Coming Soon...</p>
+        </div>
+      </div>
       <div className="flex flex-col justify-between gap-2 flex-1 overflow-auto">
         <div
           ref={messagesContainerRef}
@@ -109,13 +117,13 @@ export default function Chat() {
               </motion.div>
             </motion.div>
           )}
-          {conversation.map((message, i) => (
+          {/* {conversation.map((message, i) => (
             <React.Fragment key={i}>{message}</React.Fragment>
           ))}
-          <div ref={messagesEndRef} />
+          <div ref={messagesEndRef} /> */}
         </div>
 
-        <form action={handleSubmit} className="flex relative items-center">
+        {/* <form action={handleSubmit} className="flex relative items-center">
           <Input
             ref={inputRef}
             placeholder="Ask me about your finance..."
@@ -134,7 +142,7 @@ export default function Chat() {
           >
             <SendIcon />
           </SubmitButton>
-        </form>
+        </form> */}
       </div>
     </div>
   );

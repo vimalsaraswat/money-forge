@@ -1,1 +1,1 @@
-export const NoSidebarRoutes = ["/", "/signup*"];
+export const NoSidebarRoutes = ["/", "/signup*", "/signin*"];

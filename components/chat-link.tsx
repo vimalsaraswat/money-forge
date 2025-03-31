@@ -11,10 +11,10 @@ const ChatLink = () => {
   if (pathName === "/chat") return null;
 
   return (
-    <motion.div className="fixed bottom-3 right-4 md:bottom-5 md:right-6 z-50 animate-bounce">
-      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 blur-lg opacity-50 animate-pulse"></div>
-      <Link href="/chat" className="animate-pulse relative">
-        <Sparkles size={36} className="text-accent-foreground" />
+    <motion.div className="fixed bottom-3 right-4 md:bottom-5 md:right-6 z-50">
+      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-lime-400 to-pink-400 blur-lg opacity-50 animate-spin"></div>
+      <Link href="/chat" className="relative">
+        <Sparkles size={28} className="text-accent-foreground/50" />
       </Link>
     </motion.div>
   );

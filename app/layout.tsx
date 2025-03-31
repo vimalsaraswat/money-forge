@@ -1,15 +1,15 @@
-import type React from "react";
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import { ThemeProvider } from "@/providers/theme-provider";
-import Header from "@/components/header";
-import { Toaster } from "@/components/ui/sonner";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
-// import ChatLink from "@/components/chat-link";
+import ChatLink from "@/components/chat-link";
+import Header from "@/components/header";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { Toaster } from "@/components/ui/sonner";
 import { AIProvider } from "@/providers/ai-provider";
+import { ThemeProvider } from "@/providers/theme-provider";
+import type { Metadata } from "next";
 import { SessionProvider } from "next-auth/react";
+import { Inter } from "next/font/google";
+import type React from "react";
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -48,7 +48,7 @@ export default function RootLayout({
                   </SidebarInset>
                 </div>
                 <Toaster />
-                {/* <ChatLink /> */}
+                <ChatLink />
               </SidebarProvider>
             </AIProvider>
           </SessionProvider>

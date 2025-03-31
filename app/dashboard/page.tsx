@@ -15,6 +15,23 @@ import { BudgetListType, TransactionType } from "@/types";
 import { PlusIcon, WalletMinimalIcon } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { unstable_cache as cache } from "next/cache";
+
+const getCachedDashboardData = cache(
+  async (userId: string) => {
+    const transactionsPromise = DB.getTransactions(userId);
+    const budgetsPromise = DB.getBudgets(userId);
+    return await Promise.all([
+      transactionsPromise as Promise<TransactionType[]>,
+      budgetsPromise as Promise<BudgetListType>,
+    ]);
+  },
+  [],
+  {
+    tags: ["dashboard-data"],
+    revalidate: 60,
+  },
+);
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -23,13 +40,7 @@ export default async function DashboardPage() {
     notFound();
   }
 
-  const transactionsPromise = DB.getTransactions(userId);
-  const budgetsPromise = DB.getBudgets(userId);
-
-  const [transactions, budgets] = await Promise.all([
-    transactionsPromise as Promise<TransactionType[]>,
-    budgetsPromise as Promise<BudgetListType>,
-  ]);
+  const [transactions, budgets] = await getCachedDashboardData(userId);
 
   const expenseChartData = getExpenseChartData(transactions);
 
@@ -78,10 +89,10 @@ export default async function DashboardPage() {
         />
       </div>
       <div className="min-h-min flex-1 rounded-xl grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <TransactionBarChart data={transactions} className="col-span-full" />
-        <ExpensePieChart data={expenseChartData} />
+        {/* <TransactionBarChart data={transactions} className="col-span-full" /> */}
         <BudgetStackedChart data={budgets} />
-        <CategoryAreaChart data={transactions} className="col-span-full" />
+        <ExpensePieChart data={expenseChartData} />
+        {/* <CategoryAreaChart data={transactions} className="col-span-full" /> */}
         {/* <BudgetRadialChart data={budgets} />
         <Card>
           <CardHeader>

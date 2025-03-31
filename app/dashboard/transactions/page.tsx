@@ -5,8 +5,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DB } from "@/db/queries";
 import { TransactionType } from "@/types";
 import { Plus } from "lucide-react";
+import { unstable_cache as cache } from "next/cache";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+
+const getCachedTransactions = cache(
+  async (userId: string) => {
+    return (await DB.getTransactions(userId)) as TransactionType[];
+  },
+  [],
+  {
+    tags: ["transactions"],
+    revalidate: 60,
+  },
+);
 
 export default async function TransactionsPage() {
   const session = await auth();
@@ -14,16 +26,11 @@ export default async function TransactionsPage() {
     notFound();
   }
 
-  const transactions = (await DB.getTransactions(
-    session?.user?.id,
-  )) as TransactionType[];
+  const transactions = await getCachedTransactions(session.user.id);
 
   return (
-    <Card className="overflow-auto max-h-full relative">
-      {/* <div className="absolute w-full h-full z-20 top-0 left-0 backdrop-blur-[2px] text-center flex-1 grid place-items-center">
-        <p className="text-5xl text-gray-500 font-bold">Coming Soon...</p>
-      </div> */}
-      <CardHeader>
+    <Card className="overflow-auto max-h-full relative max-sm:gap-3 max-sm:bg-transparent max-sm:border-none max-sm:p-0 max-sm:rounded-none">
+      <CardHeader className="max-sm:px-0">
         <CardTitle className="flex items-end justify-between">
           <h2 className="text-2xl font-bold">Recent Transactions</h2>
           <Button variant="outline" asChild>
@@ -34,7 +41,7 @@ export default async function TransactionsPage() {
           </Button>
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex-1 overflow-auto">
+      <CardContent className="flex-1 overflow-auto max-sm:px-0">
         <TransactionList transactions={transactions} />
       </CardContent>
     </Card>
