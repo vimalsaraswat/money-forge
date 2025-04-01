@@ -1,5 +1,5 @@
 import { AppSidebar } from "@/components/app-sidebar";
-import ChatLink from "@/components/chat-link";
+// import ChatLink from "@/components/chat-link";
 import Header from "@/components/header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
@@ -48,7 +48,7 @@ export default function RootLayout({
                   </SidebarInset>
                 </div>
                 <Toaster />
-                <ChatLink />
+                {/* <ChatLink /> */}
               </SidebarProvider>
             </AIProvider>
           </SessionProvider>
