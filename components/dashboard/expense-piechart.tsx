@@ -6,7 +6,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { capitalize, formatCurrency } from "@/lib/utils";
+import { capitalize, formatCurrency, generateRandomColor } from "@/lib/utils";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
 import EmptyStateCard from "../EmptyDataCard";
 import {
@@ -72,7 +72,11 @@ function ExpenseChart({ data }: ExpenseChartProps) {
     );
 
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <ResponsiveContainer
+      width="100%"
+      height="100%"
+      className="grid place-items-center"
+    >
       <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
         <PieChart>
           <Pie
@@ -81,11 +85,11 @@ function ExpenseChart({ data }: ExpenseChartProps) {
             cy="50%"
             labelLine={false}
             dataKey="value"
-            cornerRadius={10}
+            // cornerRadius={10}
             label={({ value }) => formatCurrency(value)}
           >
             {data?.map((_, index) => (
-              <Cell key={`cell-${index}`} fill={`var(--color-${index + 1})`} />
+              <Cell key={`cell-${index}`} fill={generateRandomColor()} />
             ))}
           </Pie>
           <ChartTooltip

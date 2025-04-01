@@ -72,21 +72,23 @@ export default function TransactionBarChart({
     <Card className={className}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle>Income and Expenses</CardTitle>
-        <Select
-          value={timeRange}
-          onValueChange={(value) =>
-            setTimeRange(value as "monthly" | "weekly" | "daily")
-          }
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Theme" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="daily">Daily</SelectItem>
-            <SelectItem value="weekly">Weekly</SelectItem>
-            <SelectItem value="monthly">Monthly</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="hidden">
+          <Select
+            value={timeRange}
+            onValueChange={(value) =>
+              setTimeRange(value as "monthly" | "weekly" | "daily")
+            }
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Theme" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="daily">Daily</SelectItem>
+              <SelectItem value="weekly">Weekly</SelectItem>
+              <SelectItem value="monthly">Monthly</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </CardHeader>
       <CardContent className="flex-1 grid place-items-center">
         <IncomeExpenseGraph data={chartData} />
@@ -107,8 +109,12 @@ export function IncomeExpenseGraph({ data }: { data: BarChartDataType[] }) {
     );
 
   return (
-    <ResponsiveContainer width="100%" height="100%">
-      <ChartContainer config={chartConfig} className="h-[28vh] max-h-80 w-full">
+    <ResponsiveContainer
+      width="100%"
+      className="grid place-items-center"
+      height="100%"
+    >
+      <ChartContainer config={chartConfig} className="h-[48vh] max-h-80 w-full">
         <BarChart
           accessibilityLayer
           data={data}
@@ -134,8 +140,8 @@ export function IncomeExpenseGraph({ data }: { data: BarChartDataType[] }) {
             ]}
           />
           <ChartLegend formatter={(value) => capitalize(value)} />
-          <Bar dataKey="income" fill="var(--color-income)" radius={4} />
-          <Bar dataKey="expenses" fill="var(--color-expense)" radius={4} />
+          <Bar dataKey="income" fill="var(--color-income)" />
+          <Bar dataKey="expenses" fill="var(--color-expense)" />
         </BarChart>
       </ChartContainer>
     </ResponsiveContainer>

@@ -1,16 +1,14 @@
 "use client";
 
 import { Message } from "@/components/message";
-import { Input } from "@/components/ui/input";
 import { useScrollToBottom } from "@/hooks/use-scroll-to-bottom";
 import { type AIProvider } from "@/providers/ai-provider";
 import { useActions, useUIState } from "ai/rsc";
 import { motion } from "framer-motion";
-import { Loader, SendIcon, SparklesIcon } from "lucide-react";
+import { SparklesIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import React, { useRef, useState } from "react";
 import { toast } from "sonner";
-import SubmitButton from "./forms/submit-button";
 import Image from "next/image";
 
 export default function Chat() {
