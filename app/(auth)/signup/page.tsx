@@ -3,7 +3,6 @@
 import { registerUser } from "@/actions/user";
 import InputWithLabel from "@/components/forms/InputWithLabel";
 import SubmitButton from "@/components/forms/submit-button";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   InputOTP,

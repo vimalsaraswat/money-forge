@@ -8,53 +8,18 @@ import { motion } from "framer-motion";
 import { SparklesIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import React, { useRef, useState } from "react";
-import { toast } from "sonner";
+// import { toast } from "sonner";
 import Image from "next/image";
 
 export default function Chat() {
   const { data: session } = useSession();
-  const [conversation, setConversation] = useUIState<typeof AIProvider>();
-  const { submitUserMessage } = useActions();
-  const [loading, setLoading] = useState(false);
-  const [input, setInput] = useState("");
+  // const [conversation, setConversation] = useUIState<typeof AIProvider>();
+  // const { submitUserMessage } = useActions();
+  // const [loading, setLoading] = useState(false);
+  // const [input, setInput] = useState("");
 
-  const inputRef = useRef<HTMLInputElement>(null);
   const [messagesContainerRef, messagesEndRef] =
     useScrollToBottom<HTMLDivElement>();
-
-  const handleSubmit = async () => {
-    if (loading) return;
-    setLoading(true);
-    try {
-      if (!(input?.trim()?.length > 0)) {
-        toast.warning("Please enter a message");
-        return;
-      }
-
-      setInput("");
-      setConversation((currentConversation) => [
-        ...currentConversation,
-        <Message
-          key={conversation.length}
-          role="user"
-          imgUrl={session?.user?.image}
-          content={input}
-        />,
-      ]);
-
-      const { success, message } = await submitUserMessage(input);
-      if (success) {
-        setConversation((currentConversation) => [
-          ...currentConversation,
-          message,
-        ]);
-      } else {
-        toast.error(message || "Something went wrong, please try again later.");
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="relative flex flex-col justify-center flex-1 max-w-3xl mx-auto">
@@ -71,7 +36,7 @@ export default function Chat() {
           ref={messagesContainerRef}
           className="flex-1 flex flex-col gap-3 w-full items-center overflow-y-auto pt-16"
         >
-          {conversation.length === 0 && (
+          {0 === 0 && (
             <motion.div
               className="h-[350px] px-4 w-full max-w-md md:px-0"
               initial={{ opacity: 0, y: 20 }}
@@ -117,8 +82,8 @@ export default function Chat() {
           )}
           {/* {conversation.map((message, i) => (
             <React.Fragment key={i}>{message}</React.Fragment>
-          ))}
-          <div ref={messagesEndRef} /> */}
+          ))} */}
+          <div ref={messagesEndRef} />
         </div>
 
         {/* <form action={handleSubmit} className="flex relative items-center">
