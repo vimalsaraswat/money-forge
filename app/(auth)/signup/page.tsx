@@ -1,28 +1,28 @@
 "use client";
 
-import { registerUser } from "@/actions/user";
-import InputWithLabel from "@/components/forms/InputWithLabel";
-import SubmitButton from "@/components/forms/submit-button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSeparator,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
-import { useActionState, useState } from "react";
+// import { registerUser } from "@/actions/user";
+// import InputWithLabel from "@/components/forms/InputWithLabel";
+// import SubmitButton from "@/components/forms/submit-button";
+// import { Card, CardContent, CardHeader } from "@/components/ui/card";
+// import {
+//   InputOTP,
+//   InputOTPGroup,
+//   InputOTPSeparator,
+//   InputOTPSlot,
+// } from "@/components/ui/input-otp";
+// import { useActionState, useState } from "react";
 
 export default function SignupPage() {
-  const [state, action] = useActionState(registerUser, null);
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    otp: "",
-  });
+  // const [state, action] = useActionState(registerUser, null);
+  // const [formData, setFormData] = useState({
+  //   email: "",
+  //   password: "",
+  //   otp: "",
+  // });
 
   return (
     <div className="grid place-items-center">
-      <Card className="w-lg aspect-video">
+      {/* <Card className="w-lg aspect-video">
         <CardHeader>
           <h1 className="text-2xl font-bold">Sign Up</h1>
         </CardHeader>
@@ -72,7 +72,7 @@ export default function SignupPage() {
             />
           </form>
         </CardContent>
-      </Card>
+      </Card> */}
     </div>
   );
 }
