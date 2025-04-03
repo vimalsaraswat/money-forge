@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/chart";
 import { BudgetListType } from "@/types";
 import { Bar, BarChart, ResponsiveContainer, XAxis } from "recharts";
+import EmptyStateCard from "../EmptyDataCard";
 
 const chartConfig = {
   expense: {
@@ -43,13 +44,23 @@ export default function BudgetStackedChart({
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 grid place-items-center">
-        <BudgetChart data={data} />
+        {data.length > 0 ? (
+          <BudgetChart data={data} />
+        ) : (
+          <EmptyStateCard
+            addText="Add Budgets"
+            heading="Visualize Your Budgets"
+            description="Start by adding your budget categories and amounts to see a comparison of your budget vs. expenditure."
+            href="/dashboard/budgets"
+          />
+        )}
       </CardContent>
     </Card>
   );
 }
 
 function BudgetChart({ data }: { data: BudgetListType }) {
+  console.log(data);
   return (
     <ResponsiveContainer width="100%" height="100%">
       <ChartContainer config={chartConfig} className="min-h-[300px] w-full">

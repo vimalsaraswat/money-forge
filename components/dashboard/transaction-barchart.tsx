@@ -78,13 +78,19 @@ export default function TransactionBarChart({
             setTimeRange(value as "monthly" | "weekly" | "daily")
           }
         >
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px] cursor-pointer">
             <SelectValue placeholder="Theme" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="daily">Daily</SelectItem>
-            <SelectItem value="weekly">Weekly</SelectItem>
-            <SelectItem value="monthly">Monthly</SelectItem>
+            <SelectItem value="daily" className="cursor-pointer">
+              Daily
+            </SelectItem>
+            <SelectItem value="weekly" className="cursor-pointer">
+              Weekly
+            </SelectItem>
+            <SelectItem value="monthly" className="cursor-pointer">
+              Monthly
+            </SelectItem>
           </SelectContent>
         </Select>
       </CardHeader>

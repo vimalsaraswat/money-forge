@@ -89,10 +89,10 @@ export default async function DashboardPage() {
         />
       </div>
       <div className="min-h-min flex-1 rounded-xl grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* <TransactionBarChart data={transactions} className="col-span-full" /> */}
+        <TransactionBarChart data={transactions} className="col-span-full" />
         <BudgetStackedChart data={budgets} />
         <ExpensePieChart data={expenseChartData} />
-        {/* <CategoryAreaChart data={transactions} className="col-span-full" /> */}
+        <CategoryAreaChart data={transactions} className="col-span-full" />
         {/* <BudgetRadialChart data={budgets} />
         <Card>
           <CardHeader>
