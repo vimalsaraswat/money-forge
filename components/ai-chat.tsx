@@ -121,8 +121,8 @@ export default function Chat() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* <form action={handleSubmit} className="flex relative items-center">
-          <Input
+        <form action={handleSubmit} className="flex relative items-center">
+          {/* <> <Input
             ref={inputRef}
             placeholder="Ask me about your finance..."
             value={input}
@@ -139,8 +139,8 @@ export default function Chat() {
             className="absolute right-0 bottom-0 opacity-80 cursor-pointer"
           >
             <SendIcon />
-          </SubmitButton>
-        </form> */}
+            </SubmitButton></> */}
+        </form>
       </div>
     </div>
   );
