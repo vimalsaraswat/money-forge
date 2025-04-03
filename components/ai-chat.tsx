@@ -1,16 +1,14 @@
 "use client";
 
 import { Message } from "@/components/message";
-import { Input } from "@/components/ui/input";
 import { useScrollToBottom } from "@/hooks/use-scroll-to-bottom";
 import { type AIProvider } from "@/providers/ai-provider";
 import { useActions, useUIState } from "ai/rsc";
 import { motion } from "framer-motion";
-import { Loader, SendIcon, SparklesIcon } from "lucide-react";
+import { SparklesIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { toast } from "sonner";
-import SubmitButton from "./forms/submit-button";
 import Image from "next/image";
 
 export default function Chat() {
@@ -20,7 +18,7 @@ export default function Chat() {
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState("");
 
-  const inputRef = useRef<HTMLInputElement>(null);
+  // const inputRef = useRef<HTMLInputElement>(null);
   const [messagesContainerRef, messagesEndRef] =
     useScrollToBottom<HTMLDivElement>();
 
@@ -119,8 +117,8 @@ export default function Chat() {
           )}
           {/* {conversation.map((message, i) => (
             <React.Fragment key={i}>{message}</React.Fragment>
-          ))}
-          <div ref={messagesEndRef} /> */}
+          ))} */}
+          <div ref={messagesEndRef} />
         </div>
 
         {/* <form action={handleSubmit} className="flex relative items-center">
