@@ -161,7 +161,7 @@ export default async function LandingPage() {
             </h2>
             <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
               Join thousands of users who are already mastering their finances
-              with MoneyForge's intelligent tools.
+              with MoneyForge&apos;s intelligent tools.
             </p>
             <Link
               href="/api/auth/signin"
@@ -175,5 +175,4 @@ export default async function LandingPage() {
       </div>
     </div>
   );
-  s;
 }
