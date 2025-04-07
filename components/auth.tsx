@@ -1,6 +1,7 @@
 import { signIn, signOut } from "@/auth";
 import { Button } from "./ui/button";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 export function SignIn({ ...props }: React.ComponentProps<typeof Button>) {
   return (
@@ -18,7 +19,7 @@ export function SignIn({ ...props }: React.ComponentProps<typeof Button>) {
         variant="ghost"
         {...props}
         type="submit"
-        className="cursor-pointer"
+        className={cn("cursor-pointer", props?.className)}
       >
         {props?.children ?? (
           <>
