@@ -5,11 +5,13 @@ import { useScrollToBottom } from "@/hooks/use-scroll-to-bottom";
 import { type AIProvider } from "@/providers/ai-provider";
 import { useActions, useUIState } from "ai/rsc";
 import { motion } from "framer-motion";
-import { SparklesIcon } from "lucide-react";
+import { Loader, SendIcon, SparklesIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { toast } from "sonner";
 import Image from "next/image";
+import SubmitButton from "./forms/submit-button";
+import { Input } from "./ui/input";
 
 export default function Chat() {
   const { data: session } = useSession();
@@ -18,7 +20,7 @@ export default function Chat() {
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState("");
 
-  // const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [messagesContainerRef, messagesEndRef] =
     useScrollToBottom<HTMLDivElement>();
 
@@ -58,14 +60,6 @@ export default function Chat() {
 
   return (
     <div className="relative flex flex-col justify-center flex-1 max-w-3xl mx-auto">
-      <div className="absolute h-full w-full bg-[#1f1f1f01] backdrop-blur-[2px] z-50 grid place-items-center">
-        <div className="flex items-center gap-2">
-          <div className="p-[2px] border-2 border-teal-800 rounded-full">
-            <div className="bg-teal-700 rounded-full size-3" />
-          </div>
-          <p className="text-2xl font-bold animate-pulse">Coming Soon...</p>
-        </div>
-      </div>
       <div className="flex flex-col justify-between gap-2 flex-1 overflow-auto">
         <div
           ref={messagesContainerRef}
@@ -115,31 +109,33 @@ export default function Chat() {
               </motion.div>
             </motion.div>
           )}
-          {/* {conversation.map((message, i) => (
+          {conversation.map((message, i) => (
             <React.Fragment key={i}>{message}</React.Fragment>
-          ))} */}
+          ))}
           <div ref={messagesEndRef} />
         </div>
 
         <form action={handleSubmit} className="flex relative items-center">
-          {/* <> <Input
-            ref={inputRef}
-            placeholder="Ask me about your finance..."
-            value={input}
-            onChange={(event) => {
-              setInput(event.target.value);
-            }}
-            className="pr-10"
-            autoFocus
-          />
-          <SubmitButton
-            size="icon"
-            variant="outline"
-            loading={<Loader className="animate-spin" />}
-            className="absolute right-0 bottom-0 opacity-80 cursor-pointer"
-          >
-            <SendIcon />
-            </SubmitButton></> */}
+          <>
+            <Input
+              ref={inputRef}
+              placeholder="Ask me about your finance..."
+              value={input}
+              onChange={(event) => {
+                setInput(event.target.value);
+              }}
+              className="pr-10"
+              autoFocus
+            />
+            <SubmitButton
+              size="icon"
+              variant="outline"
+              loading={<Loader className="animate-spin" />}
+              className="absolute right-0 bottom-0 opacity-80 cursor-pointer"
+            >
+              <SendIcon />
+            </SubmitButton>
+          </>
         </form>
       </div>
     </div>

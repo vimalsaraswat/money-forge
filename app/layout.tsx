@@ -40,8 +40,14 @@ export default function RootLayout({
               <SidebarProvider className="flex flex-col [--header-height:calc(--spacing(14))]">
                 <Header />
                 <div className="flex flex-1 items-stretch">
+                  {/* Animated Background Elements */}
+                  <div className="fixed inset-0 overflow-hidden pointer-events-none">
+                    <div className="absolute -top-1/4 -left-1/4 w-1/2 h-1/2 bg-emerald-500/20 rounded-full blur-[120px] animate-pulse" />
+                    <div className="absolute top-3/4 left-2/3 w-1/3 h-1/3 bg-blue-500/20 rounded-full blur-[90px] animate-pulse delay-1000" />
+                    <div className="absolute top-1/4 -right-1/4 w-1/2 h-1/2 bg-purple-500/20 rounded-full blur-[120px] animate-pulse delay-2000" />
+                  </div>
                   <AppSidebar className="pt-[var(--header-height)] bg-sidebar/50 backdrop-blur-sm" />
-                  <SidebarInset className="self-stretch flex-1 bg-background/50 backdrop-blur-sm">
+                  <SidebarInset className="self-stretch flex-1 bg-background/75 backdrop-blur-md">
                     <div className="h-[calc(100dvh-var(--header-height)-2px)] overflow-auto p-2 md:p-4 grid">
                       {children}
                     </div>
