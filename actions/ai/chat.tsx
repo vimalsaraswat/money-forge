@@ -1,16 +1,29 @@
 "use server";
 
-import { auth } from "@/auth";
-import { TextStreamMessage } from "@/components/message";
-import { prompt } from "@/config/prompts";
-import { DB } from "@/db/queries";
+import { createStreamableValue, getMutableAIState } from "ai/rsc";
 import { google } from "@ai-sdk/google";
-import { streamUI } from "ai/rsc";
+import { ReactNode } from "react";
+import { generateId, smoothStream, streamText } from "ai";
+import { auth } from "@/auth";
+import { prompt } from "@/config/prompts";
 import { after } from "next/server";
-import { z } from "zod";
-import { getUserCategories } from "../category";
+import { DB } from "@/db/queries";
 
-export async function submitUserMessage(input: string) {
+export interface ServerMessage {
+  role: "user" | "assistant" | "function";
+  content: string;
+  chatId?: string;
+  createdAt?: Date;
+}
+
+export interface ClientMessage {
+  id: string;
+  role: "user" | "assistant" | "function";
+  display: ReactNode;
+  chatId?: string;
+}
+
+export async function continueConversation(input: string) {
   try {
     const session = await auth();
     if (!session?.user?.id) {
@@ -20,49 +33,121 @@ export async function submitUserMessage(input: string) {
       throw new Error("Not enough credits (ask vimal for more)");
     }
 
-    const ui = await streamUI({
-      model: google("gemini-1.5-flash"),
-      system: prompt,
-      prompt: input,
-      text: ({ content }) => <TextStreamMessage content={content} />,
-      tools: {
-        getFinanceCategories: {
-          description: "Get all finance categories available to user",
-          parameters: z.object({}),
-          generate: async () => {
-            const categories = await getUserCategories();
+    const history = getMutableAIState();
+    const userMessage: ServerMessage = {
+      role: "user",
+      content: input,
+      createdAt: new Date(),
+    };
+    history.update([...history.get(), userMessage]);
 
-            return (
-              <TextStreamMessage
-                content={categories
-                  ?.map(
-                    (category) =>
-                      `**${category.name}**\n${
-                        category.description || "No description available."
-                      }`,
-                  )
-                  .join("\n\n")}
-              />
-            );
-          },
+    const stream = createStreamableValue();
+
+    (async () => {
+      const { textStream } = streamText({
+        model: google("gemini-1.5-flash"),
+        system: prompt,
+        messages: [...history.get(), userMessage],
+        maxSteps: 5,
+        experimental_activeTools: [],
+        experimental_transform: smoothStream({ chunking: "word" }),
+        experimental_generateMessageId: generateId,
+        tools: {},
+        onFinish: async ({ response }) => {
+          console.log(
+            "response",
+            response.messages,
+            response.messages[0].content,
+          );
+          history.done([
+            ...history.get(),
+            {
+              role: "assistant",
+              content: (response.messages[0].content[0] as { text: string })
+                .text,
+              createdAt: new Date(),
+            },
+          ]);
         },
-      },
-    });
+      });
+
+      for await (const text of textStream) {
+        stream.update(text);
+      }
+
+      stream.done();
+    })();
 
     after(async () => {
-      if (session?.user?.id && session?.user?.credits > 0)
-        await DB.updateUser(session?.user?.id, {
+      try {
+        const userId = session?.user?.id;
+        if (!session.user?.id) return;
+        if (!(userId && session?.user?.credits > 0)) return;
+
+        await DB.updateUser(userId, {
           credits: session?.user?.credits - 1,
         });
+
+        let chatId = history.get()?.[0]?.chatId;
+        if (!chatId) {
+          chatId = (await DB.createChat(userId))[0].id;
+        }
+
+        history.get()?.forEach(async (message: ServerMessage) => {
+          if (!message?.chatId) {
+            console.log("message", message);
+            await DB.createMessage({
+              chatId,
+              parts: [{ type: "text", text: message.content }],
+              role: message.role,
+              attachments: [],
+              createdAt: message.createdAt || new Date(),
+            });
+          }
+        });
+      } catch {
+        console.error("Failed to save chat");
+      }
     });
 
     return {
-      message: ui.value,
+      message: {
+        role: "assistant",
+        display: stream.value,
+      },
       success: true,
     };
   } catch (err) {
     const error = err as Error;
-    // console.log(JSON.stringify(error, null, 2));
+    console.error(error);
     return { success: false, message: error?.message || "An error occurred" };
+  }
+}
+
+export async function getChats() {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      throw new Error("Not authenticated");
+    }
+
+    const chatIds = await DB.getChats(session?.user?.id);
+    const latestChatId = chatIds[0]?.id;
+
+    if (!latestChatId) {
+      return [];
+    }
+
+    const messages = await DB.getMessages(latestChatId);
+
+    const formattedMessages = messages.map((message) => ({
+      chatId: message.chatId,
+      role: message.role,
+      content: message?.parts[0]?.text,
+    }));
+
+    return formattedMessages as ServerMessage[];
+  } catch {
+    return [];
   }
 }
