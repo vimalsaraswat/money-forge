@@ -2,11 +2,12 @@ import { db } from "@/db/drizzle";
 import { budgets, categories, transactions } from "@/db/tables/finance";
 import { TransactionType } from "@/types";
 import { and, desc, eq, isNull, or, sql } from "drizzle-orm";
-import { users } from "../schema";
 import { userQueries } from "./user";
+import { aiQueries } from "./ai";
 
 export const DB = {
   ...userQueries,
+  ...aiQueries,
 
   // ==================== Transactions ====================
   createTransaction: async (transaction: typeof transactions.$inferInsert) => {

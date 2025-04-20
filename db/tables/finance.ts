@@ -1,7 +1,13 @@
-import { text, timestamp, doublePrecision, boolean } from "drizzle-orm/pg-core";
-import { users } from "./auth";
 import { PeriodEnum, TransactionEnum } from "@/types";
+import {
+  boolean,
+  doublePrecision,
+  json,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core";
 import { createEnum, createTable } from "../table-creator";
+import { users } from "./auth";
 
 export const budgetPeriodEnum = createEnum(
   "period",
@@ -71,4 +77,29 @@ export const budgets = createTable("budgets", {
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
   updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow(),
   deletedAt: timestamp("deletedAt", { mode: "date" }),
+});
+
+export const chats = createTable("chats", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
+  createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
+  updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow(),
+  deletedAt: timestamp("deletedAt", { mode: "date" }),
+});
+
+export const messages = createTable("messages", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  chatId: text("chatId")
+    .notNull()
+    .references(() => chats.id, { onDelete: "cascade", onUpdate: "cascade" }),
+  role: text("role").notNull(),
+  parts: json("parts").notNull().$type<{ type: string; text?: string }[]>(),
+  attachments: json("attachments").notNull(),
+  createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
 });

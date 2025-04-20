@@ -1,10 +1,33 @@
-import { createAI } from "ai/rsc";
-import { submitUserMessage } from "@/actions/ai/chat";
+import {
+  ClientMessage,
+  continueConversation,
+  ServerMessage,
+} from "@/actions/ai/chat";
+import { generateId } from "ai";
+import { createAI, getAIState } from "ai/rsc";
 
-export const AIProvider = createAI<any[], React.ReactNode[]>({
-  initialUIState: [],
-  initialAIState: [],
+export const AIProvider = createAI<ServerMessage[], ClientMessage[]>({
   actions: {
-    submitUserMessage,
+    continueConversation,
+  },
+  // onSetAIState: async ({ state, done }) => {
+  //   "use server";
+
+  //   console.log(done);
+  //   if (done) {
+  //     console.log("Saving state ", state);
+  //     // saveChat(state);
+  //   }
+  // },
+  onGetUIState: async () => {
+    "use server";
+
+    const history = getAIState() as ServerMessage[];
+
+    return history.map(({ role, content }) => ({
+      id: generateId(),
+      role,
+      display: role === "function" ? <p>{...JSON.parse(content)}</p> : content,
+    }));
   },
 });

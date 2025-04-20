@@ -1,19 +1,22 @@
 "use client";
 
+import { ClientMessage } from "@/actions/ai/chat";
 import { Message } from "@/components/message";
 import { useScrollToBottom } from "@/hooks/use-scroll-to-bottom";
 import { type AIProvider } from "@/providers/ai-provider";
-import { useActions, useUIState } from "ai/rsc";
+import { generateId } from "ai";
+import { readStreamableValue, useActions, useUIState } from "ai/rsc";
 import { motion } from "framer-motion";
 import { Loader, SendIcon, SparklesIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 import React, { useRef, useState } from "react";
 import { toast } from "sonner";
-import Image from "next/image";
 import SubmitButton from "./forms/submit-button";
 import { Input } from "./ui/input";
 
 export default function Chat() {
+  const { continueConversation } = useActions();
   const { data: session } = useSession();
   const [conversation, setConversation] = useUIState<typeof AIProvider>();
   const { submitUserMessage } = useActions();
@@ -21,7 +24,7 @@ export default function Chat() {
   const [input, setInput] = useState("");
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const [messagesContainerRef, messagesEndRef] =
+  const [messagesContainerRef, messagesEndRef, scrollToBottom] =
     useScrollToBottom<HTMLDivElement>();
 
   const handleSubmit = async () => {
@@ -33,25 +36,46 @@ export default function Chat() {
         return;
       }
 
-      setInput("");
-      setConversation((currentConversation) => [
-        ...currentConversation,
-        <Message
-          key={conversation.length}
-          role="user"
-          imgUrl={session?.user?.image}
-          content={input}
-        />,
-      ]);
+      const userMsg: ClientMessage = {
+        id: generateId(),
+        role: "user",
+        display: input,
+      };
 
-      const { success, message } = await submitUserMessage(input);
+      const { success, message } = await continueConversation(input);
+
       if (success) {
+        setInput("");
         setConversation((currentConversation) => [
           ...currentConversation,
-          message,
+          userMsg,
         ]);
+
+        let textContent = "";
+        const msgId = generateId();
+
+        setConversation((currentConversation) => [
+          ...currentConversation,
+          // message,
+          { id: msgId, role: "assistant", display: "" },
+        ]);
+        for await (const delta of readStreamableValue(message.display)) {
+          textContent += delta;
+
+          setConversation((currentConversation) =>
+            currentConversation.map((msg) =>
+              msg.id === msgId ? { ...msg, display: textContent } : msg,
+            ),
+          );
+
+          scrollToBottom();
+        }
       } else {
-        toast.error(message || "Something went wrong, please try again later.");
+        const errorMsg =
+          typeof message === "string"
+            ? message
+            : "Something went wrong, please try again later.";
+        toast.error(errorMsg);
       }
     } finally {
       setLoading(false);
@@ -110,7 +134,22 @@ export default function Chat() {
             </motion.div>
           )}
           {conversation.map((message, i) => (
-            <React.Fragment key={i}>{message}</React.Fragment>
+            <React.Fragment key={i}>
+              {message.role === "user" && (
+                <Message
+                  role="user"
+                  imgUrl={session?.user?.image}
+                  content={message.display}
+                />
+              )}
+              {message.role === "assistant" && (
+                <Message
+                  role="assistant"
+                  imgUrl="/logo.webp"
+                  content={message.display || "..."}
+                />
+              )}
+            </React.Fragment>
           ))}
           <div ref={messagesEndRef} />
         </div>

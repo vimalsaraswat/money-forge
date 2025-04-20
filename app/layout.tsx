@@ -1,3 +1,4 @@
+import { getChats, ServerMessage } from "@/actions/ai/chat";
 import { AppSidebar } from "@/components/app-sidebar";
 import ChatLink from "@/components/chat-link";
 import Header from "@/components/header";
@@ -18,13 +19,15 @@ export const metadata: Metadata = {
   description: "Forging a solid financial future, one decision at a time.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   ai,
   children,
 }: Readonly<{
   ai: React.ReactNode;
   children: React.ReactNode;
 }>) {
+  const history: ServerMessage[] = await getChats();
+
   return (
     <html lang="en" style={{ fontSize: "100%" }} suppressHydrationWarning>
       <body className={`${inter.className} antialiased h-dvh`}>
@@ -35,21 +38,20 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <SessionProvider>
-            <AIProvider>
+            <AIProvider initialAIState={history} initialUIState={[]}>
               <div>{ai}</div>
               <SidebarProvider className="flex flex-col [--header-height:calc(--spacing(14))]">
                 <Header />
                 <div className="flex flex-1 items-stretch">
-                  {/* Animated Background Elements */}
-                  <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute -top-1/4 -left-1/4 w-1/2 h-1/2 bg-emerald-500/20 rounded-full blur-[120px] animate-pulse" />
-                    <div className="absolute top-3/4 left-2/3 w-1/3 h-1/3 bg-blue-500/20 rounded-full blur-[90px] animate-pulse delay-1000" />
-                    <div className="absolute top-1/4 -right-1/4 w-1/2 h-1/2 bg-purple-500/20 rounded-full blur-[120px] animate-pulse delay-2000" />
-                  </div>
                   <AppSidebar className="pt-[var(--header-height)] bg-sidebar/50 backdrop-blur-sm" />
                   <SidebarInset className="self-stretch flex-1 bg-background/75 backdrop-blur-md">
-                    <div className="h-[calc(100dvh-var(--header-height)-2px)] overflow-auto p-2 md:p-4 grid">
+                    <div className="h-[calc(100dvh-var(--header-height)-2px)] overflow-auto p-2 md:p-4 grid scroll-smooth">
                       {children}
+                      {/* Animated Background Elements */}
+                      <div className="fixed -z-40 opacity-40 overflow-hidden pointer-events-none">
+                        <div className="absolute top-3/4 left-2/3 w-1/3 h-1/3 bg-blue-500/20 rounded-full blur-[90px] animate-pulse ease-initial duration-[8000] delay-4000" />
+                        <div className="absolute top-1/4 -right-1/4 w-1/2 h-1/2 bg-purple-500/20 rounded-full blur-[120px] animate-pulse duration-[8000] delay-[10000]" />
+                      </div>
                     </div>
                   </SidebarInset>
                 </div>
