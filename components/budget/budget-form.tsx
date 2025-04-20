@@ -30,9 +30,11 @@ import {
 export default function BudgetForm({
   budget,
   editMode,
+  onSuccess,
 }: {
   budget?: BudgetType;
   editMode?: boolean;
+  onSuccess?: () => void;
 }) {
   const initialFormState = {
     amount: String(budget?.amount) ?? "",
@@ -48,8 +50,6 @@ export default function BudgetForm({
     success: false,
   });
   const [formState, setFormState] = useState(initialFormState);
-
-  const router = useRouter();
 
   const errors = state?.errors;
 
@@ -70,7 +70,7 @@ export default function BudgetForm({
       }
     }
     if (state?.success) {
-      router.replace("/dashboard/budgets");
+      onSuccess?.();
     }
   }, [state]);
 

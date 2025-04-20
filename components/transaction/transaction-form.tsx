@@ -27,9 +27,11 @@ import { cn } from "@/lib/utils";
 export default function TransactionForm({
   transaction,
   editMode,
+  onSuccess,
 }: {
   transaction?: TransactionType;
   editMode?: boolean;
+  onSuccess?: () => void;
 }) {
   const initialFormState = {
     type: transaction?.type ?? TransactionEnum.EXPENSE,
@@ -46,7 +48,6 @@ export default function TransactionForm({
     message: "",
     success: false,
   });
-  const router = useRouter();
   const errors = state?.errors;
 
   const formAction = (formData: FormData) => {
@@ -66,9 +67,10 @@ export default function TransactionForm({
       }
     }
     if (state?.success) {
-      router.replace("/dashboard/transactions");
+      onSuccess?.();
     }
   }, [state]);
+
   return (
     <>
       {state?.success ? (

@@ -10,19 +10,21 @@ import {
 } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "../ui/button";
-import Link from "next/link";
-import { formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency, formatDate } from "@/lib/utils";
 import { DeleteBudget } from "./budget-form";
-import { BudgetListType } from "@/types";
+import { BudgetListType, BudgetType } from "@/types";
 import Image from "next/image";
+import { BudgetModal } from "./budget-modal";
+import EmptyStateCard from "../EmptyDataCard";
 
 const calculateProgress = (spent: number, amount: number) => {
-  return (spent / amount) * 100;
+  if (amount <= 0) return 0;
+  return Math.min(100, (spent / amount) * 100);
 };
 
 const getProgressColor = (progress: number) => {
   if (progress >= 90) return "bg-destructive";
-  if (progress >= 75) return "bg-warning/80";
+  if (progress >= 75) return "bg-yellow-500";
   return "bg-primary";
 };
 
@@ -34,93 +36,118 @@ export default function BudgetManagement({
   return (
     <div className="space-y-6 flex-1">
       {!(budgets?.length > 0) ? (
-        <div className="text-center flex flex-col gap-2 items-center justify-center h-full py-20 rounded-lg max-w-[80%] mx-auto">
-          <AlertCircle className="h-10 w-10 text-secondary-foreground" />
-          <h3 className="text-lg font-semibold text-foreground">
-            No Budgets Yet
-          </h3>
-          <p className="text-sm text-secondary-foreground">
-            Start tracking your expenses by creating a budget.
-          </p>
-          <Button variant="outline" size="sm" asChild>
-            <Link href="/dashboard/budgets/new">
-              <Plus className="mr-2 h-4 w-4" /> Create Budget
-            </Link>
-          </Button>
-        </div>
+        <EmptyStateCard
+          heading="No Budgets Yet"
+          description="Start tracking your expenses by creating a budget."
+          href="/dashboard/budgets/new"
+          addText="Create Budget"
+        />
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {budgets?.map((budget) => {
             const progress = calculateProgress(
               budget?.spent ?? 0,
               budget.amount,
             );
             const progressColor = getProgressColor(progress);
+            const remaining = budget.amount - (budget?.spent ?? 0);
 
             return (
-              <Card key={budget.id}>
-                <CardHeader>
-                  <CardTitle className="flex justify-between">
-                    <div className="flex items-center">
+              <Card key={budget.id} className="flex flex-col">
+                <CardHeader className="pb-3">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="flex items-center space-x-3">
                       {budget?.image && (
                         <Image
-                          src={budget?.image}
-                          alt={budget?.category || ""}
-                          width={48}
-                          height={48}
-                          className="rounded-md mr-2"
+                          src={budget.image}
+                          alt={budget.category || ""}
+                          width={36}
+                          height={36}
+                          className="rounded-md"
                         />
                       )}
-                      <span className="text-xl">{budget?.category}</span>
+                      <CardTitle className="text-lg leading-tight">
+                        {budget.category}
+                      </CardTitle>{" "}
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Button variant="outline" size="icon" asChild>
-                        <Link href={`/dashboard/budgets/${budget?.id}/edit`}>
-                          <Pencil />
-                        </Link>
-                      </Button>
-                      <DeleteBudget budgetId={budget?.id} />
+                    <div className="flex items-center gap-1">
+                      {/* Use BudgetModal for Edit */}
+                      <BudgetModal
+                        mode="edit"
+                        budget={budget}
+                        trigger={
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 hover:bg-accent"
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                        }
+                      />
+                      <DeleteBudget budgetId={budget.id} />
                     </div>
-                  </CardTitle>
-                  <CardDescription className="flex flex-col lg:flex-row lg:items-center gap-2">
+                  </div>
+                  <CardDescription className="text-xs">
+                    {/* Smaller description */}
                     <span>
                       {budget.period.charAt(0).toUpperCase() +
                         budget.period.slice(1)}{" "}
-                      Budget
-                    </span>
-                    <span>
-                      {budget?.startDate?.toLocaleDateString()} -{" "}
-                      {budget?.endDate?.toLocaleDateString()}
+                      Budget |{" "}
+                      {formatDate(budget.startDate, {
+                        month: "short",
+                        day: "numeric",
+                      })}{" "}
+                      -{" "}
+                      {formatDate(budget.endDate, {
+                        month: "short",
+                        day: "numeric",
+                        year: "2-digit",
+                      })}
                     </span>
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="flex flex-col gap-2">
-                  <div className="flex justify-between">
-                    <span>
-                      {formatCurrency(budget?.spent ?? 0)} /{" "}
-                      {formatCurrency(budget?.amount ?? 0)}
-                    </span>
-                    <span>{Math.round(progress)}%</span>
+                <CardContent className="flex flex-col gap-2 pt-0 pb-3 flex-grow">
+                  {/* Adjust padding, add flex-grow */}
+                  <div className="text-xs text-muted-foreground flex justify-between">
+                    <span>Spent</span>
+                    <span>Budget</span>
+                  </div>
+                  <div className="text-sm font-medium flex justify-between">
+                    <span>{formatCurrency(budget.spent ?? 0)}</span>
+                    <span>{formatCurrency(budget.amount)}</span>
                   </div>
                   <Progress
-                    value={Math.round(progress)}
+                    value={progress}
                     progressClassName={progressColor}
+                    className="h-1.5" // Make progress bar thinner
                   />
                   {progress >= 90 && (
-                    <Alert variant="destructive">
-                      <AlertCircle className="h-4 w-4 stroke-warning" />
-                      <AlertTitle className="text-warning">Warning</AlertTitle>
-                      <AlertDescription>
-                        {`You've nearly exceeded your budget for ${budget?.category}`}
+                    <Alert
+                      variant="destructive"
+                      className="mt-2 px-3 py-1.5 text-xs"
+                    >
+                      {/* Smaller alert */}
+                      <AlertCircle className="h-3.5 w-3.5" />
+                      <AlertTitle className="font-medium">Warning</AlertTitle>
+                      <AlertDescription className="sr-only">
+                        {/* Hide description or make it concise */}
+                        {`Nearly exceeded budget for ${budget.category}`}
                       </AlertDescription>
                     </Alert>
                   )}
                 </CardContent>
-                <CardFooter>
-                  <p className="text-sm text-muted-foreground">
-                    Remaining:{" "}
-                    {formatCurrency(budget.amount - (budget?.spent ?? 0))}
-                  </p>
+                <CardFooter className="pt-0 pb-3 px-6 text-xs text-muted-foreground mt-auto">
+                  {/* Adjust padding, add mt-auto */}
+                  Remaining:{" "}
+                  <span
+                    className={cn(
+                      "font-medium ml-1",
+                      remaining < 0 ? "text-destructive" : "text-green-600",
+                    )}
+                  >
+                    {formatCurrency(remaining)}
+                  </span>
                 </CardFooter>
               </Card>
             );
