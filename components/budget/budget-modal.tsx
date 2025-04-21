@@ -10,12 +10,12 @@ import {
   DialogDescription, // Optional: Add description
 } from "@/components/ui/dialog";
 import BudgetForm from "./budget-form";
-import { BudgetType } from "@/types";
+import { BudgetListType } from "@/types";
 
 interface BudgetModalProps {
   trigger: React.ReactNode;
   mode: "new" | "edit";
-  budget?: BudgetType;
+  budget?: BudgetListType[0];
 }
 
 export function BudgetModal({ trigger, mode, budget }: BudgetModalProps) {

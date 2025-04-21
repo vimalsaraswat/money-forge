@@ -55,7 +55,7 @@ export function noSidebar(pathname: string) {
   );
 }
 
-function escapeCsvField(field: any): string {
+function escapeCsvField(field: string | number | Date | null): string {
   if (field === null || typeof field === "undefined") {
     return "";
   }
@@ -75,7 +75,7 @@ function escapeCsvField(field: any): string {
 
 // Helper to convert data to CSV
 export function generateCsv(
-  data: Record<string, any>[],
+  data: Record<string, string | number | Date | null>[],
   headers: string[],
 ): string {
   if (!data || data.length === 0) return "";

@@ -49,7 +49,7 @@ export const Message = ({
 }: {
   role: "assistant" | "user";
   imgUrl?: string | null;
-  content: string;
+  content: string | ReactNode;
 }) => {
   return (
     <div
@@ -80,12 +80,12 @@ export const Message = ({
         </div>
 
         <div className="bg-card/50 p-2 rounded-md flex flex-col gap-1 w-full">
-          {role === "user" ? (
+          {role !== "user" && typeof content === "string" ? (
+            <Markdown>{content}</Markdown>
+          ) : (
             <p className="text-card-foreground text-wrap flex flex-col gap-4">
               {content}
             </p>
-          ) : (
-            <Markdown>{content}</Markdown>
           )}
         </div>
       </motion.div>

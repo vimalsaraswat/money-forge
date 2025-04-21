@@ -60,6 +60,7 @@ export type BudgetType = {
 export type BudgetListType = {
   id: string;
   category: string | null;
+  categoryId?: string;
   image?: string;
   period: PeriodEnum;
   spent: number;

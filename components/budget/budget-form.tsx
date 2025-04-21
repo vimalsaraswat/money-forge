@@ -11,9 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { BudgetType, PeriodEnum } from "@/types";
+import { BudgetListType, PeriodEnum } from "@/types";
 import { Trash } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
 import Spinner from "../spinner";
@@ -32,7 +31,7 @@ export default function BudgetForm({
   editMode,
   onSuccess,
 }: {
-  budget?: BudgetType;
+  budget?: BudgetListType[0];
   editMode?: boolean;
   onSuccess?: () => void;
 }) {

@@ -361,8 +361,8 @@ function DeleteConfirmation({
     <form action={formAction} className="space-y-4">
       <h3 className="text-lg font-semibold mb-2">Delete Category</h3>
       <p>
-        Are you sure you want to delete the category "
-        <strong>{categoryName}</strong>"?
+        Are you sure you want to delete the category &quot;
+        <strong>{categoryName}</strong>&quot;?
       </p>
       {state?.errors?.general && (
         <Alert variant="destructive">

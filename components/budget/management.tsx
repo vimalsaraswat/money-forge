@@ -1,4 +1,4 @@
-import { AlertCircle, Pencil, Plus } from "lucide-react";
+import { AlertCircle, Pencil } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import {
   Card,
@@ -12,7 +12,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "../ui/button";
 import { cn, formatCurrency, formatDate } from "@/lib/utils";
 import { DeleteBudget } from "./budget-form";
-import { BudgetListType, BudgetType } from "@/types";
+import { BudgetListType } from "@/types";
 import Image from "next/image";
 import { BudgetModal } from "./budget-modal";
 import EmptyStateCard from "../EmptyDataCard";

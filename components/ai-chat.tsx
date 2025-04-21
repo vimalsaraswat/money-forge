@@ -19,7 +19,6 @@ export default function Chat() {
   const { continueConversation } = useActions();
   const { data: session } = useSession();
   const [conversation, setConversation] = useUIState<typeof AIProvider>();
-  const { submitUserMessage } = useActions();
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState("");
 
