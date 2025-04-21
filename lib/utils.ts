@@ -54,3 +54,41 @@ export function noSidebar(pathname: string) {
     }) ?? false
   );
 }
+
+function escapeCsvField(field: any): string {
+  if (field === null || typeof field === "undefined") {
+    return "";
+  }
+
+  const stringField = String(field);
+
+  if (
+    stringField.includes(",") ||
+    stringField.includes('"') ||
+    stringField.includes("\n")
+  ) {
+    return `"${stringField.replace(/"/g, '""')}"`;
+  }
+
+  return stringField;
+}
+
+// Helper to convert data to CSV
+export function generateCsv(
+  data: Record<string, any>[],
+  headers: string[],
+): string {
+  if (!data || data.length === 0) return "";
+
+  const headerRow = ["Id", ...headers].map(escapeCsvField).join(",");
+
+  const dataRows = data.map((row, index) => {
+    const values = headers.map((header) => {
+      const value = row[header];
+      return escapeCsvField(value);
+    });
+    return [String(index + 1), ...values].join(",");
+  });
+
+  return [headerRow, ...dataRows].join("\n");
+}

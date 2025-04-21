@@ -2,11 +2,20 @@ import { auth } from "@/auth";
 import { SignOut } from "@/components/auth";
 import { Button } from "@/components/ui/button";
 import UserForm from "@/components/user-form";
-import { Pencil } from "lucide-react";
+import { Pencil, User, FolderKanban, DatabaseZap } from "lucide-react"; // Added icons
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ManageCategoriesModal } from "@/components/settings/manage-categories-modal";
+import { DataExport } from "@/components/settings/data-export";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"; // Import Card components
 
-export default async function Profile({
+export default async function ProfilePage({
   searchParams,
 }: {
   searchParams: Promise<{ edit: boolean | undefined }>;
@@ -21,46 +30,89 @@ export default async function Profile({
   const user = session?.user;
 
   return (
-    <div className="container h-full mx-auto p-4 flex flex-col">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-gray-100">
-          User Profile
-        </h1>
-        <div className="flex items-center gap-2">
-          {!editMode && (
-            <Button asChild variant="outline">
-              <Link href="/profile?edit=true">
-                <Pencil /> Edit
-              </Link>
-            </Button>
-          )}
-          <SignOut variant="destructive" />
-        </div>
-      </div>
-      <UserForm
-        editMode={editMode}
-        user={{
-          name: user?.name ?? "",
-          image: user?.image ?? "",
-          email: user?.email ?? "",
-        }}
-      />
-      {/* <Card>
+    <div className="container h-full mx-auto p-4 grid grid-cols-1 md:grid-cols-1 gap-6 lg:gap-8">
+      {" "}
+      {/* Use grid/flex for layout */}
+      {/* Profile Section Card */}
+      <Card className="overflow-hidden">
+        {" "}
+        {/* Added overflow-hidden */}
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <div className="flex items-center gap-3">
+            <User className="h-5 w-5 text-muted-foreground" />
+            <CardTitle className="text-xl font-semibold">
+              User Profile
+            </CardTitle>
+          </div>
+          <div className="flex items-center gap-2">
+            {!editMode && (
+              <Button asChild variant="outline" size="sm">
+                <Link href="/profile?edit=true">
+                  <Pencil className="mr-1 h-4 w-4" /> Edit
+                </Link>
+              </Button>
+            )}
+            <SignOut variant="destructive" size="sm" />
+          </div>
+        </CardHeader>
+        <CardContent className="pt-4">
+          {" "}
+          {/* Added padding top */}
+          <UserForm
+            editMode={editMode}
+            user={{
+              name: user?.name ?? "",
+              image: user?.image ?? "",
+              email: user?.email ?? "",
+            }}
+          />
+        </CardContent>
+      </Card>
+      {/* Data Management Section Card */}
+      <Card>
         <CardHeader>
-          <CardTitle>Edit Profile</CardTitle>
+          <div className="flex items-center gap-3">
+            <FolderKanban className="h-5 w-5 text-muted-foreground" />
+            <CardTitle className="text-xl font-semibold">
+              Category Management
+            </CardTitle>
+          </div>
+          <CardDescription>
+            Organize your financial tracking by managing custom categories.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <ManageCategoriesModal
+            triggerButton={
+              <Button variant="secondary">Manage Categories</Button> // Slightly different variant
+            }
+          />
+          {/* Optional: <p className="text-sm text-muted-foreground"> Add, edit, or delete your custom income and expense categories. </p> */}
+        </CardContent>
+      </Card>
+      {/* Data Export Section Card */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <DatabaseZap className="h-5 w-5 text-muted-foreground" />
+            <CardTitle className="text-xl font-semibold">Export Data</CardTitle>
+          </div>
+          <CardDescription>
+            Download your transaction and budget data in CSV format.
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <Label htmlFor="name">Name</Label>
-              <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
-            </div>
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-            </div>
-            <Button type="submit">Update Profile</Button>
-          </form>
+          <DataExport />
+        </CardContent>
+      </Card>
+      {/* Placeholder for future settings */}
+      {/* <Card>
+        <CardHeader>
+          <CardTitle>Account Security</CardTitle>
+          <CardDescription>Manage password and security settings.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground">Coming soon...</p>
         </CardContent>
       </Card> */}
     </div>

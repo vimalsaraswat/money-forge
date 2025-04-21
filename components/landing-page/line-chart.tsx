@@ -20,7 +20,7 @@ const demoData = [
 
 const SampleLineChart = () => {
   return (
-    <div className="glass-card p-8 rounded-2xl transform hover:scale-[1.02] transition-all duration-300">
+    <div className="glass-card md:p-8 rounded-2xl transform hover:scale-[1.02] transition-all duration-300">
       <ResponsiveContainer width="100%" height={400}>
         <AreaChart data={demoData}>
           <defs>

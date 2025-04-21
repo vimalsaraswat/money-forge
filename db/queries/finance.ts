@@ -1,6 +1,6 @@
 import { db } from "@/db/drizzle";
 import { TransactionType } from "@/types";
-import { and, count, desc, eq, isNull, or, sql } from "drizzle-orm";
+import { and, count, desc, eq, gte, isNull, lte, or, sql } from "drizzle-orm";
 import { budgets, categories, transactions } from "../tables/finance";
 
 export const financeQueries = {
@@ -50,6 +50,35 @@ export const financeQueries = {
       )
       .orderBy(desc(transactions[order]))
       .limit(limit);
+  },
+
+  getTransactionsInRange: async (
+    userId: string,
+    startDate: Date,
+    endDate: Date,
+  ) => {
+    return await db
+      .select({
+        id: transactions.id,
+        amount: transactions.amount,
+        category: categories.name,
+        type: categories.type,
+        date: transactions.date,
+        description: transactions.description,
+        createdAt: transactions.createdAt,
+        updatedAt: transactions.updatedAt,
+      })
+      .from(transactions)
+      .leftJoin(categories, eq(transactions.categoryId, categories.id))
+      .where(
+        and(
+          eq(transactions.userId, userId),
+          isNull(transactions.deletedAt),
+          gte(transactions.date, startDate),
+          lte(transactions.date, endDate),
+        ),
+      )
+      .orderBy(desc(transactions.date));
   },
 
   getTransactionById: async (transactionId: string, userId: string) => {
