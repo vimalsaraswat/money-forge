@@ -1,6 +1,11 @@
 import { handleTransaction, deleteTransaction } from "./transaction";
 import { handleBudget, deleteBudget } from "./budget";
-import { getUserCategories } from "./category";
+import {
+  getUserCategories,
+  createCustomCategory,
+  deleteCustomCategory,
+  updateCustomCategory,
+} from "./category";
 
 export {
   handleTransaction,
@@ -8,4 +13,7 @@ export {
   deleteTransaction,
   deleteBudget,
   getUserCategories,
+  createCustomCategory,
+  deleteCustomCategory,
+  updateCustomCategory,
 };
