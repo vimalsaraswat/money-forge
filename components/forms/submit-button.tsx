@@ -26,7 +26,7 @@ export default function SubmitButton({
       disabled={pending}
       className={cn("cursor-pointer", props?.className)}
     >
-      {pending && (
+      {!loading && pending && (
         <div className="animate-spin rounded-full h-4 w-4 border-2 border-current border-t-transparent mr-2" />
       )}
       {pending ? loadingLabel : label}

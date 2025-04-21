@@ -1,7 +1,5 @@
-import Link from "next/link";
-import { SignIn } from "@/components/auth";
 import { auth } from "@/auth";
-import Image from "next/image";
+import { SignIn } from "@/components/auth";
 import {
   ArrowRightIcon,
   BellIcon,
@@ -13,10 +11,12 @@ import {
   SparklesIcon,
   TrendingUp,
 } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert } from "@/components/ui/alert";
 import SampleLineChart from "@/components/landing-page/line-chart";
+import { Alert } from "@/components/ui/alert";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function LandingPage() {
   const session = await auth();
@@ -41,7 +41,7 @@ export default async function LandingPage() {
               Transform your financial future with intelligent tracking, smart
               budgeting, and AI-driven recommendations tailored just for you.
             </p>
-            <div className="flex flex-col items-center sm:flex-row gap-4">
+            <div className="flex flex-col md:items-center sm:flex-row gap-4">
               {user ? (
                 <Link
                   href="/dashboard"
@@ -52,7 +52,7 @@ export default async function LandingPage() {
               ) : (
                 <SignIn
                   variant="outline"
-                  className="inline-flex items-center h-16 justify-center bg-primary/80 text-primary-foreground px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-300 hover:scale-105 group"
+                  className="inline-flex items-center h-16 justify-center bg-primary/40 hover:bg-accent/40 text-primary-foreground px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-300 hover:scale-105 group"
                 >
                   <Image
                     className="mr-2 group-hover:-translate-x-1 transition-transform drop-shadow-xl"
@@ -64,16 +64,16 @@ export default async function LandingPage() {
                   Start Your Journey
                 </SignIn>
               )}
-              <a
+              <Link
                 href="#features"
                 className="inline-flex items-center justify-center bg-white/10 backdrop-blur-md border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-300 hover:scale-105 group"
               >
                 Learn More
                 <ChevronRightIcon className="ml-2 group-hover:translate-x-1 transition-transform" />
-              </a>
+              </Link>
             </div>
           </div>
-          <div className="lg:w-1/2">
+          <div className="w-full lg:w-1/2">
             <SampleLineChart />
           </div>
         </div>
@@ -132,7 +132,7 @@ export default async function LandingPage() {
             ].map((feature, index) => (
               <Card
                 key={index}
-                className="rounded-2xl hover:bg-white/5 transition-all duration-300 transform hover:scale-[1.02] group"
+                className="rounded-2xl hover:bg-card/80 transition-all duration-300 transform hover:scale-[1.02] group"
               >
                 <CardHeader>
                   <div className="h-12 w-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
@@ -164,7 +164,7 @@ export default async function LandingPage() {
               with MoneyForge&apos;s intelligent tools.
             </p>
             <Link
-              href="/api/auth/signin"
+              href={user ? "/dashboard" : "/api/auth/signin"}
               className="inline-flex items-center justify-center  bg-white/10 backdrop-blur-md border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] hover:bg-emerald-500/20 px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-300 hover:scale-105 group"
             >
               Get Started Now

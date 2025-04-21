@@ -5,6 +5,7 @@ import Image from "next/image";
 import { ReactNode } from "react";
 import { BotIcon, UserIcon } from "./icons";
 import { Markdown } from "./markdown";
+import { cn } from "@/lib/utils";
 
 export const TextStreamMessage = ({
   content,
@@ -15,7 +16,7 @@ export const TextStreamMessage = ({
   // const [text] = useStreamableValue(content);
 
   return (
-    <div className="w-full flex items-center justify-end">
+    <div className="w-full flex items-center justify-start">
       <motion.div
         className={`flex flex-row gap-2 w-fit max-w-10/12 md:max-w-[500px] bg-card/50 p-2 rounded-md`}
         initial={{ y: 40, opacity: 0 }}
@@ -48,23 +49,28 @@ export const Message = ({
 }: {
   role: "assistant" | "user";
   imgUrl?: string | null;
-  content: string | ReactNode;
+  content: string;
 }) => {
   return (
-    <div className="w-full flex items-center justify-start">
+    <div
+      className={cn(
+        "w-full flex items-center",
+        role === "user" ? "justify-end" : "justify-start",
+      )}
+    >
       <motion.div
-        className={`flex flex-row gap-2 w-max max-w-10/12 md:max-w-[500px] bg-card/50 p-2 rounded-md overflow-hidden`}
+        className={`flex flex-row gap-2 w-max max-w-10/12 md:max-w-[500px] overflow-hidden`}
         initial={{ y: 40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
       >
-        <div className="size-[24px] flex flex-col justify-center items-center flex-shrink-0 text-zinc-400">
+        <div className="size-[24px] mt-2 flex flex-col justify-center items-center flex-shrink-0 text-zinc-400">
           {imgUrl ? (
             <Image
               width={24}
               height={24}
               src={imgUrl}
               alt={`${role} avatar`}
-              className="rounded-full"
+              className="rounded-lg"
             />
           ) : role === "assistant" ? (
             <BotIcon />
@@ -73,10 +79,14 @@ export const Message = ({
           )}
         </div>
 
-        <div className="flex flex-col gap-1 w-full">
-          <p className="text-card-foreground text-wrap flex flex-col gap-4">
-            {content}
-          </p>
+        <div className="bg-card/50 p-2 rounded-md flex flex-col gap-1 w-full">
+          {role === "user" ? (
+            <p className="text-card-foreground text-wrap flex flex-col gap-4">
+              {content}
+            </p>
+          ) : (
+            <Markdown>{content}</Markdown>
+          )}
         </div>
       </motion.div>
     </div>

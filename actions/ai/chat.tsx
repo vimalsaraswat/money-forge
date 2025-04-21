@@ -3,11 +3,12 @@
 import { createStreamableValue, getMutableAIState } from "ai/rsc";
 import { google } from "@ai-sdk/google";
 import { ReactNode } from "react";
-import { generateId, smoothStream, streamText } from "ai";
+import { generateId, smoothStream, streamText, tool } from "ai";
 import { auth } from "@/auth";
 import { prompt } from "@/config/prompts";
 import { after } from "next/server";
 import { DB } from "@/db/queries";
+import { z } from "zod";
 
 export interface ServerMessage {
   role: "user" | "assistant" | "function";
@@ -22,6 +23,31 @@ export interface ClientMessage {
   display: ReactNode;
   chatId?: string;
 }
+
+const getTransactions = tool({
+  description: "Get the past transactions of the user",
+  parameters: z.object({}),
+  execute: async () => {
+    try {
+      const session = await auth();
+      if (!session?.user?.id) {
+        throw new Error("Not authenticated");
+      }
+      const transactions = await DB.getTransactions(
+        session.user.id,
+        100,
+        "date",
+      );
+
+      console.log("Transactions fetched");
+      return transactions;
+    } catch (err) {
+      const error = err as Error;
+      console.error("Error fetching transactions:", error);
+      return { error: error.message };
+    }
+  },
+});
 
 export async function continueConversation(input: string) {
   try {
@@ -49,22 +75,26 @@ export async function continueConversation(input: string) {
         system: prompt,
         messages: [...history.get(), userMessage],
         maxSteps: 5,
-        experimental_activeTools: [],
+        // experimental_activeTools: [""],
         experimental_transform: smoothStream({ chunking: "word" }),
         experimental_generateMessageId: generateId,
-        tools: {},
+        tools: { getTransactions },
         onFinish: async ({ response }) => {
-          console.log(
-            "response",
-            response.messages,
-            response.messages[0].content,
-          );
+          console.log("response", JSON.stringify(response.messages, null, 2));
+
+          let assistantMessage = "";
+          response.messages?.forEach((message) => {
+            if (assistantMessage.trim().length !== 0) return;
+            if (message.role === "assistant") {
+              assistantMessage = (message.content[0] as { text: string }).text;
+            }
+          });
+
           history.done([
             ...history.get(),
             {
               role: "assistant",
-              content: (response.messages[0].content[0] as { text: string })
-                .text,
+              content: assistantMessage,
               createdAt: new Date(),
             },
           ]);

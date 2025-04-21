@@ -44,7 +44,7 @@ export default async function RootLayout({
                 <Header />
                 <div className="flex flex-1 items-stretch">
                   <AppSidebar className="pt-[var(--header-height)] bg-sidebar/50 backdrop-blur-sm" />
-                  <SidebarInset className="self-stretch flex-1 bg-background/75 backdrop-blur-md">
+                  <SidebarInset className="self-stretch flex-1 bg-background/60 backdrop-blur-md">
                     <div className="h-[calc(100dvh-var(--header-height)-2px)] overflow-auto p-2 md:p-4 grid scroll-smooth">
                       {children}
                       {/* Animated Background Elements */}

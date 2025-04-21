@@ -11,6 +11,8 @@ import {
   budgets,
   budgetPeriodEnum,
   transactionTypeEnum,
+  chats,
+  messages,
 } from "./tables/finance";
 
 export {
@@ -24,4 +26,6 @@ export {
   budgets,
   budgetPeriodEnum,
   transactionTypeEnum,
+  chats,
+  messages,
 };
