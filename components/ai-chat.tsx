@@ -83,7 +83,7 @@ export default function Chat() {
 
   return (
     <div className="relative flex flex-col justify-center flex-1 max-w-3xl mx-auto">
-      <div className="flex flex-col justify-between gap-2 flex-1 overflow-auto">
+      <div className="flex flex-col justify-between max-w-[98dvw] gap-2 flex-1 overflow-auto">
         <div
           ref={messagesContainerRef}
           className="flex-1 flex flex-col gap-3 w-full items-center overflow-y-auto pt-16"

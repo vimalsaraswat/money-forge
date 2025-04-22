@@ -38,7 +38,8 @@ export default function TransactionForm({
     date:
       (transaction?.date
         ? new Date(transaction?.date)
-        : new Date()?.toDateString()) ?? "",
+        : new Date()
+      )?.toDateString() ?? "",
     categoryId: transaction?.categoryId ?? "",
     description: transaction?.description ?? "",
   };

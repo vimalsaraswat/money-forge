@@ -59,7 +59,7 @@ export const Message = ({
       )}
     >
       <motion.div
-        className={`flex flex-row gap-2 w-max max-w-10/12 md:max-w-[500px] overflow-hidden`}
+        className={`flex flex-row gap-2 w-fit max-w-10/12 md:max-w-[500px] overflow-hidden`}
         initial={{ y: 40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
       >
@@ -79,7 +79,7 @@ export const Message = ({
           )}
         </div>
 
-        <div className="bg-card/50 p-2 rounded-md flex flex-col gap-1 w-full">
+        <div className="bg-card/50 p-2 rounded-md flex flex-col gap-1">
           {role !== "user" && typeof content === "string" ? (
             <Markdown>{content}</Markdown>
           ) : (
