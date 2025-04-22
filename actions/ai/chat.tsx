@@ -35,12 +35,18 @@ const getTransactions = tool({
       }
       const transactions = await DB.getTransactions(
         session.user.id,
-        100,
+        40,
         "date",
       );
 
+      const formattedTransactions = transactions.map((transaction) => ({
+        category: transaction.category,
+        amount: transaction.amount,
+        date: transaction.date,
+      }));
+
       console.log("Transactions fetched");
-      return transactions;
+      return formattedTransactions;
     } catch (err) {
       const error = err as Error;
       console.error("Error fetching transactions:", error);
@@ -73,12 +79,20 @@ export async function continueConversation(input: string) {
       const { textStream } = streamText({
         model: google("gemini-1.5-flash"),
         system: prompt,
-        messages: [...history.get(), userMessage],
+        messages: [
+          {
+            role: "system",
+            content: `User name is ${session?.user?.name ?? "User"}. Their preferred currency is ${"INR"}.`,
+          },
+          ...history.get(),
+          userMessage,
+        ],
         maxSteps: 5,
-        // experimental_activeTools: [""],
+        // experimental_activeTools: ["getTransactions"],
         experimental_transform: smoothStream({ chunking: "word" }),
         experimental_generateMessageId: generateId,
         tools: { getTransactions },
+        // toolChoice: { type: "tool", toolName: "getTransactions" },
         onFinish: async ({ response }) => {
           console.log("response", JSON.stringify(response.messages, null, 2));
 
@@ -125,7 +139,6 @@ export async function continueConversation(input: string) {
 
         history.get()?.forEach(async (message: ServerMessage) => {
           if (!message?.chatId) {
-            console.log("message", message);
             await DB.createMessage({
               chatId,
               parts: [{ type: "text", text: message.content }],
@@ -149,7 +162,7 @@ export async function continueConversation(input: string) {
     };
   } catch (err) {
     const error = err as Error;
-    console.error(error);
+    console.error(error.message);
     return { success: false, message: error?.message || "An error occurred" };
   }
 }
