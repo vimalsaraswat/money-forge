@@ -36,7 +36,9 @@ export default function TransactionForm({
     type: transaction?.type ?? TransactionEnum.EXPENSE,
     amount: String(transaction?.amount ?? ""),
     date:
-      (transaction?.date?.toDateString() || new Date()?.toDateString()) ?? "",
+      (transaction?.date
+        ? new Date(transaction?.date)
+        : new Date()?.toDateString()) ?? "",
     categoryId: transaction?.categoryId ?? "",
     description: transaction?.description ?? "",
   };
@@ -235,7 +237,12 @@ export function DeleteTransaction({
         </DialogHeader>
         <form action={action} className="space-y-4">
           <DialogFooter>
-            <Button type="submit" disabled={isPending} variant="destructive">
+            <Button
+              type="submit"
+              disabled={isPending}
+              className="cursor-pointer"
+              variant="destructive"
+            >
               {isPending ? "Deleting..." : "Delete Transaction"}
             </Button>
           </DialogFooter>

@@ -42,7 +42,7 @@ export function DataExport() {
 
   useEffect(() => {
     if (transactionExportState?.success && transactionExportState?.csvData) {
-      toast.success("Transaction data ready for download.");
+      toast.success("Transaction data downloaded successfully.");
       downloadCsv(
         transactionExportState.csvData,
         transactionExportState.filename || "transactions.csv",

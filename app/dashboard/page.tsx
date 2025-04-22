@@ -29,7 +29,7 @@ const getCachedDashboardData = cache(
   [],
   {
     tags: ["dashboard-data"],
-    revalidate: 60,
+    revalidate: 10,
   },
 );
 

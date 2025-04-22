@@ -85,7 +85,11 @@ export default function TransactionList({
                     mode="edit"
                     transaction={transaction}
                     trigger={
-                      <Button variant="outline" size="icon">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="cursor-pointer"
+                      >
                         <Pencil className="h-4 w-4" />
                       </Button>
                     }
@@ -165,7 +169,7 @@ export default function TransactionList({
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="hover:bg-accent"
+                            className="hover:bg-accent cursor-pointer"
                           >
                             <Pencil className="h-4 w-4" />
                           </Button>

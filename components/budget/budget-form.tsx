@@ -39,7 +39,10 @@ export default function BudgetForm({
     amount: String(budget?.amount) ?? "",
     categoryId: budget?.categoryId ?? "",
     startDate:
-      budget?.startDate?.toDateString() ?? new Date()?.toDateString() ?? "",
+      (budget?.startDate
+        ? new Date(budget?.startDate)
+        : new Date()
+      )?.toDateString() ?? "",
     period: budget?.period ?? PeriodEnum.MONTHLY,
   };
 

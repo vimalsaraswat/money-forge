@@ -15,7 +15,7 @@ const getCachedBudgets = cache(
   ["budgets"],
   {
     tags: ["budgets"],
-    revalidate: 300,
+    revalidate: 10,
   },
 );
 
@@ -43,7 +43,7 @@ export default async function BudgetsPage() {
         />
       </div>
       {/* Ensure BudgetManagement takes full height and is scrollable */}
-      <div className="flex-1 overflow-y-auto pb-4">
+      <div className="flex-1 overflow-y-auto pb-4 flex flex-col">
         <BudgetManagement budgets={budgets} />
       </div>
     </div>

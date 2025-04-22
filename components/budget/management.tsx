@@ -1,4 +1,4 @@
-import { AlertCircle, Pencil } from "lucide-react";
+import { AlertCircle, Pencil, PlusIcon } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import {
   Card,
@@ -39,11 +39,21 @@ export default function BudgetManagement({
         <EmptyStateCard
           heading="No Budgets Yet"
           description="Start tracking your expenses by creating a budget."
-          href="/dashboard/budgets/new"
+          addButton={
+            <BudgetModal
+              mode="new"
+              trigger={
+                <Button variant="outline" className="cursor-pointer">
+                  <PlusIcon size={28} className="mr-2 h-4 w-4" /> Create First
+                  Budget
+                </Button>
+              }
+            />
+          }
           addText="Create Budget"
         />
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {budgets?.map((budget) => {
             const progress = calculateProgress(
               budget?.spent ?? 0,
