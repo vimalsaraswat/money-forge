@@ -19,7 +19,7 @@ Built with a modern tech stack, it leverages Next.js App Router features like Re
 *   **🤖 AI Financial Assistant:** Conversational AI (Google Gemini) for financial queries and insights using Vercel AI SDK with RSC streaming and tool use.
 *   **🏷️ Category Management:** Utilize default categories or create custom ones.
 *   **📧 Smart Budget Alerts:** Receive email notifications (via Nodemailer) when nearing budget limits, including AI-generated playful roasts.
-*   **👤 User Profile & Authentication:** Secure user accounts via NextAuth.js (Google provider, Credentials with OTP via Upstash Redis).
+*   **👤 User Profile & Authentication:** Secure user accounts via NextAuth.js (Google provider).
 *   **🖼️ Image Uploads:** Cloudinary integration for user profile pictures.
 *   **📄 Data Export:** Export transaction and budget data to CSV.
 *   **🎨 Modern UI:** Built with Shadcn UI, Tailwind CSS, and Framer Motion for a responsive and aesthetically pleasing interface.
