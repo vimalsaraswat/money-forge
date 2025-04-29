@@ -204,10 +204,10 @@ export const budgetAlertHTML = `
               </p>
 
               <div class="action-items">
-                  <a href="https://money-forge.com/dashboard/budgets"
+                  <a href="https://money-forge.vercel.app/dashboard/budgets"
                       >View Budgets</a
                   >
-                  <a href="https://money-forge.com/dashboard/transactions"
+                  <a href="https://money-forge.vercel.app/dashboard/transactions"
                       >Review Transactions</a
                   >
               </div>
