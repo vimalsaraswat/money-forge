@@ -131,7 +131,12 @@ export function IncomeExpenseGraph({ data }: { data: BarChartDataType[] }) {
             axisLine={false}
             tickFormatter={(value) => capitalize(value)}
           />
-          <YAxis tickLine={false} tickMargin={10} axisLine={false} />
+          <YAxis
+            tickLine={false}
+            tickMargin={10}
+            axisLine={false}
+            tickFormatter={(value) => `₹${value}`}
+          />
           <ChartTooltip
             content={<ChartTooltipContent />}
             formatter={(value, name) => [

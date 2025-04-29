@@ -197,7 +197,7 @@ export default function CategoryAreaChart({
                     });
                   }}
                 />
-                <YAxis tickFormatter={(value) => `$${value}`} />
+                <YAxis tickFormatter={(value) => `₹${value}`} />
                 <ChartTooltip
                   content={<ChartTooltipContent />}
                   labelFormatter={(value) => {
